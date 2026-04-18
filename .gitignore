@@ -1,0 +1,35 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build Output
+bin/
+obj/
+out/
+
+# .NET
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Core 
+**/wwwroot/lib/
+
+# Environment / Secrets
+appsettings.Production.json
+*.pfx
+*.key
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
