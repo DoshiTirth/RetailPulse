@@ -1,0 +1,191 @@
+﻿@model RetailPulse.Web.Models.ViewModels.DashboardViewModel
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Total Revenue</div>
+        <div class="kpi-value" data-target="@Model.TotalRevenue" data-prefix="$" data-decimal="true">$0</div>
+        <div class="kpi-sub">all completed orders</div>
+        <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Revenue (30 days)</div>
+        <div class="kpi-value" data-target="@Model.RecentRevenue" data-prefix="$" data-decimal="true">$0</div>
+        <div class="kpi-sub">last 30 days</div>
+        <div class="kpi-accent-bar" style="background: var(--green);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Pending Orders</div>
+        <div class="kpi-value" data-target="@Model.PendingOrders">0</div>
+        <div class="kpi-sub">awaiting processing</div>
+        <div class="kpi-accent-bar" style="background: var(--yellow);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Low Stock Alerts</div>
+        <div class="kpi-value" data-target="@Model.LowStockCount">0</div>
+        <div class="kpi-sub">products below reorder level</div>
+        <div class="kpi-accent-bar" style="background: var(--red);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Active Products</div>
+        <div class="kpi-value" data-target="@Model.TotalProducts">0</div>
+        <div class="kpi-sub">in catalogue</div>
+        <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Customers</div>
+        <div class="kpi-value" data-target="@Model.TotalCustomers">0</div>
+        <div class="kpi-sub">registered customers</div>
+        <div class="kpi-accent-bar" style="background: var(--green);"></div>
+    </div>
+</div>
+
+<!-- Charts + Low Stock -->
+<div class="grid-2" style="margin-bottom: 24px;">
+
+    <!-- Revenue Chart -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Monthly Revenue</span>
+            <span style="font-size:11px; color: var(--text-faint); font-family: var(--font-mono);">last 6 months</span>
+        </div>
+        <canvas id="revenueChart" height="200"></canvas>
+    </div>
+
+    <!-- Low Stock -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Low Stock Alerts</span>
+            <a asp-controller="Inventory" asp-action="Index" style="font-size:12px;">View all</a>
+        </div>
+        @if (Model.LowStockProducts.Any())
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Stock</th>
+                            <th>Reorder At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.LowStockProducts)
+                        {
+                            <tr>
+                                <td>@p.Name</td>
+                                <td style="font-family: var(--font-mono);">@p.StockQuantity</td>
+                                <td style="font-family: var(--font-mono);">@p.ReorderLevel</td>
+                                <td>
+                                    @if (p.StockQuantity == 0)
+                                    {
+                                        <span class="badge badge-red">Out of Stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-yellow">Low</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p style="color: var(--text-faint); font-size: 13px;">All products are well stocked.</p>
+        }
+    </div>
+</div>
+
+<!-- Recent Orders -->
+<div class="card animate-in">
+    <div class="card-header">
+        <span class="card-title">Recent Orders</span>
+        <a asp-controller="Orders" asp-action="Index" style="font-size:12px;">View all</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.RecentOrders)
+                {
+                    <tr>
+                        <td style="font-family: var(--font-mono);">#@order.OrderId</td>
+                        <td>@order.Customer.FullName</td>
+                        <td style="color: var(--text-secondary);">@order.OrderDate.ToString("MMM d, yyyy")</td>
+                        <td style="font-family: var(--font-mono);">$@order.TotalAmount.ToString("N2")</td>
+                        <td>
+                            @switch (order.Status)
+                            {
+                                case "Completed":
+                                    <span class="badge badge-green">Completed</span>
+                                    break;
+                                case "Pending":
+                                    <span class="badge badge-yellow">Pending</span>
+                                    break;
+                                case "Cancelled":
+                                    <span class="badge badge-red">Cancelled</span>
+                                    break;
+                                default:
+                                    <span class="badge badge-blue">@order.Status</span>
+                                    break;
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+        const labels  = [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(x => $"\"{x.Label}\"")))];
+        const revenue = [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(x => x.Revenue.ToString("F2"))))];
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: revenue,
+                    backgroundColor: 'rgba(79, 142, 247, 0.25)',
+                    borderColor: 'rgba(79, 142, 247, 0.9)',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: { duration: 900, easing: 'easeOutQuart' },
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        ticks: { color: '#9099b0', font: { size: 11 } },
+                        grid:  { color: 'rgba(255,255,255,0.04)' }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#9099b0', font: { size: 11 },
+                            callback: v => '$' + v.toLocaleString()
+                        },
+                        grid: { color: 'rgba(255,255,255,0.04)' }
+                    }
+                }
+            }
+        });
+    </script>
+}

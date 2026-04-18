@@ -19,40 +19,42 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Supplier
+        // ─── Primary Keys (explicit) ──────────────────────────
+        modelBuilder.Entity<Supplier>().HasKey(s => s.SupplierId);
+        modelBuilder.Entity<Category>().HasKey(c => c.CategoryId);
+        modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
+        modelBuilder.Entity<Customer>().HasKey(c => c.CustomerId);
+        modelBuilder.Entity<SalesOrder>().HasKey(o => o.OrderId);
+        modelBuilder.Entity<SalesOrderItem>().HasKey(i => i.OrderItemId);
+        modelBuilder.Entity<RestockLog>().HasKey(r => r.RestockId);
+
+        // ─── Supplier ─────────────────────────────────────────
         modelBuilder.Entity<Supplier>()
             .Property(s => s.Name).IsRequired().HasMaxLength(150);
 
-        // Category
+        // ─── Category ─────────────────────────────────────────
         modelBuilder.Entity<Category>()
             .Property(c => c.Name).IsRequired().HasMaxLength(100);
 
-        // Product — SKU must be unique
+        // ─── Product ──────────────────────────────────────────
         modelBuilder.Entity<Product>()
             .HasIndex(p => p.SKU).IsUnique();
 
         modelBuilder.Entity<Product>()
             .Property(p => p.UnitPrice).HasColumnType("decimal(10,2)");
 
-        // SalesOrder
+        // ─── SalesOrder ───────────────────────────────────────
         modelBuilder.Entity<SalesOrder>()
             .Property(o => o.TotalAmount).HasColumnType("decimal(12,2)");
 
         modelBuilder.Entity<SalesOrder>()
             .Property(o => o.Status).HasMaxLength(20);
 
-        // SalesOrderItem — LineTotal is computed in DB, ignore in EF
+        // ─── SalesOrderItem ───────────────────────────────────
         modelBuilder.Entity<SalesOrderItem>()
             .Property(i => i.UnitPrice).HasColumnType("decimal(10,2)");
 
-        modelBuilder.Entity<SalesOrderItem>()
-            .Ignore(i => i.UnitPrice); // will be set manually, not computed by EF
-
-        // Restore UnitPrice — we need it, just not as computed
-        modelBuilder.Entity<SalesOrderItem>()
-            .Property(i => i.UnitPrice).HasColumnType("decimal(10,2)").IsRequired();
-
-        // RestockLog
+        // ─── RestockLog ───────────────────────────────────────
         modelBuilder.Entity<RestockLog>()
             .Property(r => r.Notes).HasMaxLength(300);
     }
