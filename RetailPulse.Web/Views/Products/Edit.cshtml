@@ -1,0 +1,75 @@
+﻿@model RetailPulse.Web.Models.Product
+
+<div class="page-header">
+    <div>
+        <h1>Edit Product</h1>
+        <p>Update product details</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Products</a>
+</div>
+
+<div class="card animate-in" style="max-width: 680px;">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SKU"></label>
+                <input asp-for="SKU" />
+                <span asp-validation-for="SKU" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="CategoryId">Category</label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
+                <span asp-validation-for="CategoryId" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplierId">Supplier</label>
+                <select asp-for="SupplierId" asp-items="ViewBag.Suppliers"></select>
+                <span asp-validation-for="SupplierId" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="UnitPrice">Unit Price ($)</label>
+                <input asp-for="UnitPrice" type="number" step="0.01" min="0" />
+                <span asp-validation-for="UnitPrice" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockQuantity">Stock Quantity</label>
+                <input asp-for="StockQuantity" type="number" min="0" />
+                <span asp-validation-for="StockQuantity" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="ReorderLevel">Reorder Level</label>
+                <input asp-for="ReorderLevel" type="number" min="0" />
+                <span asp-validation-for="ReorderLevel" class="field-validation-error"></span>
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px;">
+                <label style="display: flex; align-items: center; gap: 8px; text-transform: none; font-size: 13px; cursor: pointer;">
+                    <input asp-for="IsActive" type="checkbox" style="width: auto; accent-color: var(--accent);" />
+                    Active Product
+                </label>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
