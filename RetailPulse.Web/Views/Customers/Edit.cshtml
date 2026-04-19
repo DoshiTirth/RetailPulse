@@ -1,0 +1,51 @@
+﻿@model RetailPulse.Web.Models.Customer
+
+<div class="page-header">
+    <div>
+        <h1>Edit Customer</h1>
+        <p>Update customer details</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Customers</a>
+</div>
+
+<div class="card animate-in" style="max-width: 680px;">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="CustomerId" />
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" />
+                <span asp-validation-for="FirstName" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" />
+                <span asp-validation-for="LastName" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone"></label>
+                <input asp-for="Phone" />
+            </div>
+        </div>
+
+        <div class="form-group" style="max-width: 300px;">
+            <label asp-for="City"></label>
+            <input asp-for="City" />
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
