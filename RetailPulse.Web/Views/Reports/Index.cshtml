@@ -1,0 +1,252 @@
+﻿@model RetailPulse.Web.Models.ViewModels.ReportsViewModel
+
+<!-- Charts Row -->
+<div class="grid-2" style="margin-bottom: 24px;">
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Monthly Revenue</span>
+            <span style="font-size:11px; color: var(--text-faint); font-family: var(--font-mono);">last 12 months</span>
+        </div>
+        <canvas id="revenueChart" height="220"></canvas>
+    </div>
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Sales by Category</span>
+        </div>
+        <canvas id="categoryChart" height="220"></canvas>
+    </div>
+</div>
+
+<div class="card animate-in" style="margin-bottom: 24px;">
+    <div class="card-header">
+        <span class="card-title">Top Products by Revenue</span>
+    </div>
+    <canvas id="productsChart" height="120"></canvas>
+</div>
+
+<!-- Report Generator -->
+<div class="card animate-in">
+    <div class="card-header">
+        <span class="card-title">Generate Report</span>
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+        <form asp-action="Preview" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="reportType" value="revenue" />
+            <button type="submit" class="btn @(Model.SelectedReport == "revenue" ? "btn-primary" : "btn-ghost")">
+                Monthly Revenue
+            </button>
+        </form>
+        <form asp-action="Preview" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="reportType" value="products" />
+            <button type="submit" class="btn @(Model.SelectedReport == "products" ? "btn-primary" : "btn-ghost")">
+                Top Products
+            </button>
+        </form>
+        <form asp-action="Preview" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="reportType" value="category" />
+            <button type="submit" class="btn @(Model.SelectedReport == "category" ? "btn-primary" : "btn-ghost")">
+                Sales by Category
+            </button>
+        </form>
+        <form asp-action="Preview" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="reportType" value="lowstock" />
+            <button type="submit" class="btn @(Model.SelectedReport == "lowstock" ? "btn-primary" : "btn-ghost")">
+                Low Stock
+            </button>
+        </form>
+    </div>
+
+    @if (Model.SelectedReport != null)
+    {
+        <!-- Preview Table -->
+        <div style="background: var(--bg-surface2); border-radius: var(--radius-md);
+                    padding: 20px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                    Preview —
+                    @(Model.SelectedReport switch {
+                        "revenue"  => "Monthly Revenue",
+                        "products" => "Top Products",
+                        "category" => "Sales by Category",
+                        "lowstock" => "Low Stock",
+                        _          => ""
+                    })
+                </span>
+                <div style="display: flex; gap: 10px;">
+                    <a asp-action="DownloadCsv" asp-route-reportType="@Model.SelectedReport"
+                       class="btn btn-ghost" style="font-size: 12px;">
+                        Download CSV
+                    </a>
+                    <a asp-action="DownloadPdf" asp-route-reportType="@Model.SelectedReport"
+                       class="btn btn-primary" style="font-size: 12px;">
+                        Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    @if (Model.SelectedReport == "revenue")
+                    {
+                        <thead>
+                            <tr><th>Month</th><th>Orders</th><th>Revenue</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.MonthlyRevenue)
+                            {
+                                <tr>
+                                    <td>@r.Label</td>
+                                    <td style="font-family: var(--font-mono);">@r.Orders</td>
+                                    <td style="font-family: var(--font-mono);">$@r.Revenue.ToString("N2")</td>
+                                </tr>
+                            }
+                            <tr style="border-top: 2px solid var(--accent);">
+                                <td colspan="2" style="font-weight: 700;">Total</td>
+                                <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent);">
+                                    $@Model.TotalRevenue.ToString("N2")
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                    else if (Model.SelectedReport == "products")
+                    {
+                        <thead>
+                            <tr><th>Product</th><th>Units Sold</th><th>Revenue</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.TopProducts)
+                            {
+                                <tr>
+                                    <td style="font-weight: 600;">@p.ProductName</td>
+                                    <td style="font-family: var(--font-mono);">@p.UnitsSold</td>
+                                    <td style="font-family: var(--font-mono);">$@p.Revenue.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                    else if (Model.SelectedReport == "category")
+                    {
+                        <thead>
+                            <tr><th>Category</th><th>Transactions</th><th>Revenue</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.ByCategory)
+                            {
+                                <tr>
+                                    <td style="font-weight: 600;">@c.CategoryName</td>
+                                    <td style="font-family: var(--font-mono);">@c.Orders</td>
+                                    <td style="font-family: var(--font-mono);">$@c.Revenue.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                    else if (Model.SelectedReport == "lowstock")
+                    {
+                        <thead>
+                            <tr><th>Product</th><th>Category</th><th>Supplier</th><th>Stock</th><th>Reorder At</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.LowStock)
+                            {
+                                <tr>
+                                    <td style="font-weight: 600;">@p.Name</td>
+                                    <td>@p.Category.Name</td>
+                                    <td style="color: var(--text-secondary);">@p.Supplier.Name</td>
+                                    <td style="font-family: var(--font-mono); color: var(--red);">@p.StockQuantity</td>
+                                    <td style="font-family: var(--font-mono);">@p.ReorderLevel</td>
+                                </tr>
+                            }
+                        </tbody>
+                    }
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 32px; color: var(--text-faint);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.4;">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            <div style="font-size: 13px;">Select a report type above to preview and download</div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    const chartDefaults = {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: { color: '#9099b0', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { ticks: { color: '#9099b0', font: { size: 11 }, callback: v => '$' + v.toLocaleString() }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+    };
+
+    // Monthly Revenue
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'line',
+        data: {
+            labels: [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(x => $"\"{x.Label}\"")))],
+            datasets: [{
+                data: [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(x => x.Revenue.ToString("F2"))))],
+                borderColor: '#4f8ef7',
+                backgroundColor: 'rgba(79,142,247,0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#4f8ef7'
+            }]
+        },
+        options: { responsive: true, animation: { duration: 900 }, ...chartDefaults }
+    });
+
+    // Category Doughnut
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'doughnut',
+        data: {
+            labels: [@Html.Raw(string.Join(",", Model.ByCategory.Select(x => $"\"{x.CategoryName}\"")))],
+            datasets: [{
+                data: [@Html.Raw(string.Join(",", Model.ByCategory.Select(x => x.Revenue.ToString("F2"))))],
+                backgroundColor: ['#4f8ef7','#3ecf8e','#f7c94f','#f75f5f','#a78bfa'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: { duration: 900 },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right',
+                    labels: { color: '#9099b0', font: { size: 11 }, padding: 16 }
+                }
+            }
+        }
+    });
+
+    // Top Products Bar
+    new Chart(document.getElementById('productsChart'), {
+        type: 'bar',
+        data: {
+            labels: [@Html.Raw(string.Join(",", Model.TopProducts.Select(x => $"\"{x.ProductName}\"")))],
+            datasets: [{
+                data: [@Html.Raw(string.Join(",", Model.TopProducts.Select(x => x.Revenue.ToString("F2"))))],
+                backgroundColor: 'rgba(62,207,142,0.25)',
+                borderColor: 'rgba(62,207,142,0.9)',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: { responsive: true, animation: { duration: 900 }, ...chartDefaults }
+    });
+</script>
+}

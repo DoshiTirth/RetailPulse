@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+wig1eI9Y4I=",
+  "dgSpecHash": "HfG/va1p+yU=",
   "success": true,
   "projectFilePath": "D:\\ERP System\\RetailPulse\\RetailPulse.Web\\RetailPulse.Web.csproj",
   "expectedPackageFiles": [
@@ -49,6 +49,7 @@
     "C:\\Users\\doshi\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "C:\\Users\\doshi\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\doshi\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
+    "C:\\Users\\doshi\\.nuget\\packages\\questpdf\\2024.10.4\\questpdf.2024.10.4.nupkg.sha512",
     "C:\\Users\\doshi\\.nuget\\packages\\system.clientmodel\\1.0.0\\system.clientmodel.1.0.0.nupkg.sha512",
     "C:\\Users\\doshi\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512",
     "C:\\Users\\doshi\\.nuget\\packages\\system.collections.immutable\\7.0.0\\system.collections.immutable.7.0.0.nupkg.sha512",
