@@ -1,0 +1,77 @@
+﻿@model IEnumerable<RetailPulse.Web.Models.Supplier>
+
+<div class="page-header">
+    <div>
+        <h1>Suppliers</h1>
+        <p>Manage your supplier network</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Add Supplier
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card animate-in">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Supplier</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Products</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td style="font-weight: 600;">@s.Name</td>
+                        <td style="color: var(--text-secondary);">@(s.ContactName ?? "—")</td>
+                        <td style="color: var(--text-secondary);">@(s.Email ?? "—")</td>
+                        <td>@(s.Country ?? "—")</td>
+                        <td><span class="badge badge-blue">@s.Products.Count products</span></td>
+                        <td>
+                            @if (s.IsActive)
+                            {
+                                <span class="badge badge-green">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-red">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a asp-action="Edit" asp-route-id="@s.SupplierId"
+                                   class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                <form asp-action="ToggleActive" asp-route-id="@s.SupplierId" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn @(s.IsActive ? "btn-danger" : "btn-primary")"
+                                            style="padding: 5px 10px; font-size: 12px;">
+                                        @(s.IsActive ? "Deactivate" : "Activate")
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

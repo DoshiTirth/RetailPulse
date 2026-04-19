@@ -1,0 +1,58 @@
+﻿@model RetailPulse.Web.Models.Supplier
+
+<div class="page-header">
+    <div>
+        <h1>Edit Supplier</h1>
+        <p>Update supplier details</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Suppliers</a>
+</div>
+
+<div class="card animate-in" style="max-width: 680px;">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="SupplierId" />
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Name">Company Name</label>
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactName">Contact Person</label>
+                <input asp-for="ContactName" />
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" type="email" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone">Phone</label>
+                <input asp-for="Phone" />
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Country">Country</label>
+                <input asp-for="Country" />
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px;">
+                <label style="display: flex; align-items: center; gap: 8px; text-transform: none; font-size: 13px; cursor: pointer;">
+                    <input asp-for="IsActive" type="checkbox" style="width: auto; accent-color: var(--accent);" />
+                    Active Supplier
+                </label>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,48 @@
+﻿@model RetailPulse.Web.Models.Supplier
+
+<div class="page-header">
+    <div>
+        <h1>Add Supplier</h1>
+        <p>Register a new supplier</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Suppliers</a>
+</div>
+
+<div class="card animate-in" style="max-width: 680px;">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Name">Company Name</label>
+                <input asp-for="Name" placeholder="e.g. TechSource Inc." />
+                <span asp-validation-for="Name" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactName">Contact Person</label>
+                <input asp-for="ContactName" placeholder="e.g. John Smith" />
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" type="email" placeholder="contact@supplier.com" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone">Phone</label>
+                <input asp-for="Phone" placeholder="e.g. 416-555-0101" />
+            </div>
+        </div>
+
+        <div class="form-group" style="max-width: 300px;">
+            <label asp-for="Country">Country</label>
+            <input asp-for="Country" placeholder="e.g. Canada" />
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save Supplier</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
