@@ -1,0 +1,31 @@
+﻿@model RetailPulse.Web.Models.Category
+
+<div class="page-header">
+    <div>
+        <h1>Add Category</h1>
+        <p>Create a new product category</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Categories</a>
+</div>
+
+<div class="card animate-in" style="max-width: 560px;">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" placeholder="e.g. Electronics" />
+            <span asp-validation-for="Name" class="field-validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" rows="3" placeholder="Optional description"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save Category</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>

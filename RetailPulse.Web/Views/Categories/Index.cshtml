@@ -1,0 +1,61 @@
+﻿@model IEnumerable<RetailPulse.Web.Models.Category>
+
+<div class="page-header">
+    <div>
+        <h1>Categories</h1>
+        <p>Manage product categories</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Add Category
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card animate-in">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Products</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td style="font-weight: 600;">@c.Name</td>
+                        <td style="color: var(--text-secondary);">@(c.Description ?? "—")</td>
+                        <td>
+                            <span class="badge badge-blue">@c.Products.Count products</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a asp-action="Edit" asp-route-id="@c.CategoryId" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@c.CategoryId" method="post" style="display:inline;"
+                                      onsubmit="return confirm('Delete @c.Name?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

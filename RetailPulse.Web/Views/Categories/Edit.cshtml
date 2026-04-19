@@ -1,0 +1,32 @@
+﻿@model RetailPulse.Web.Models.Category
+
+<div class="page-header">
+    <div>
+        <h1>Edit Category</h1>
+        <p>Update category details</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Categories</a>
+</div>
+
+<div class="card animate-in" style="max-width: 560px;">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="CategoryId" />
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" class="field-validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" rows="3"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
