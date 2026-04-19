@@ -27,6 +27,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<SalesOrder>().HasKey(o => o.OrderId);
         modelBuilder.Entity<SalesOrderItem>().HasKey(i => i.OrderItemId);
         modelBuilder.Entity<RestockLog>().HasKey(r => r.RestockId);
+        modelBuilder.Entity<RestockLog>().ToTable("RestockLog");
 
         // ─── Supplier ─────────────────────────────────────────
         modelBuilder.Entity<Supplier>()

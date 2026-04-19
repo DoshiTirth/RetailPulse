@@ -1,0 +1,111 @@
+﻿@model IEnumerable<RetailPulse.Web.Models.Product>
+
+<div class="page-header">
+    <div>
+        <h1>Stock & Restock</h1>
+        <p>Monitor inventory levels and restock products</p>
+    </div>
+    <a asp-action="History" class="btn btn-ghost">
+        View Restock History
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Stock Summary Cards -->
+<div class="kpi-grid" style="margin-bottom: 24px;">
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Total Products</div>
+        <div class="kpi-value">@Model.Count()</div>
+        <div class="kpi-sub">active in catalogue</div>
+        <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Low Stock</div>
+        <div class="kpi-value" style="color: var(--yellow);">@Model.Count(p => p.StockQuantity <= p.ReorderLevel && p.StockQuantity > 0)</div>
+        <div class="kpi-sub">below reorder level</div>
+        <div class="kpi-accent-bar" style="background: var(--yellow);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Out of Stock</div>
+        <div class="kpi-value" style="color: var(--red);">@Model.Count(p => p.StockQuantity == 0)</div>
+        <div class="kpi-sub">need immediate restock</div>
+        <div class="kpi-accent-bar" style="background: var(--red);"></div>
+    </div>
+    <div class="kpi-card animate-in">
+        <div class="kpi-label">Well Stocked</div>
+        <div class="kpi-value" style="color: var(--green);">@Model.Count(p => p.StockQuantity > p.ReorderLevel)</div>
+        <div class="kpi-sub">above reorder level</div>
+        <div class="kpi-accent-bar" style="background: var(--green);"></div>
+    </div>
+</div>
+
+<div class="card animate-in">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                    <th>Stock</th>
+                    <th>Reorder At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td style="font-weight: 600;">@p.Name</td>
+                        <td style="color: var(--text-secondary);">@p.Category.Name</td>
+                        <td style="color: var(--text-secondary);">@p.Supplier.Name</td>
+                        <td>
+                            @if (p.StockQuantity == 0)
+                            {
+                                <span style="font-family: var(--font-mono); color: var(--red); font-weight: 700;">0</span>
+                            }
+                            else if (p.StockQuantity <= p.ReorderLevel)
+                            {
+                                <span style="font-family: var(--font-mono); color: var(--yellow); font-weight: 700;">@p.StockQuantity</span>
+                            }
+                            else
+                            {
+                                <span style="font-family: var(--font-mono); color: var(--green);">@p.StockQuantity</span>
+                            }
+                        </td>
+                        <td style="font-family: var(--font-mono); color: var(--text-secondary);">@p.ReorderLevel</td>
+                        <td>
+                            @if (p.StockQuantity == 0)
+                            {
+                                <span class="badge badge-red">Out of Stock</span>
+                            }
+                            else if (p.StockQuantity <= p.ReorderLevel)
+                            {
+                                <span class="badge badge-yellow">Low Stock</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-green">OK</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Restock" asp-route-id="@p.ProductId"
+                               class="btn btn-primary" style="padding: 5px 12px; font-size: 12px;">
+                                Restock
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
