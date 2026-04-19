@@ -39,3 +39,27 @@
     });
 
 });
+
+// ─── Dark / Light Mode Toggle ─────────────────────────
+const themeToggle = document.getElementById('theme-toggle');
+const iconDark = document.getElementById('icon-dark');
+const iconLight = document.getElementById('icon-light');
+const toggleLabel = document.getElementById('toggle-label');
+const savedTheme = localStorage.getItem('retailpulse-theme');
+
+function applyTheme(isLight) {
+    document.body.classList.toggle('light-mode', isLight);
+    if (iconDark) iconDark.style.display = isLight ? 'none' : 'block';
+    if (iconLight) iconLight.style.display = isLight ? 'block' : 'none';
+    if (toggleLabel) toggleLabel.textContent = isLight ? 'Dark' : 'Light';
+}
+
+applyTheme(savedTheme === 'light');
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const isLight = !document.body.classList.contains('light-mode');
+        applyTheme(isLight);
+        localStorage.setItem('retailpulse-theme', isLight ? 'light' : 'dark');
+    });
+}

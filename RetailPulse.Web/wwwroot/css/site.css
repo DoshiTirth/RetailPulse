@@ -1,4 +1,18 @@
 
+
+/* Light Mode Overrides */
+body.light-mode {
+    --bg-base: #f0f2f7;
+    --bg-surface: #ffffff;
+    --bg-surface2: #e8eaf0;
+    --bg-hover: #dde1ea;
+    --text-primary: #0f1117;
+    --text-secondary: #4a5168;
+    --text-faint: #8892a4;
+    --border: rgba(0,0,0,0.08);
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
 :root {
     --bg-base: #0f1117;
     --bg-surface: #181c27;

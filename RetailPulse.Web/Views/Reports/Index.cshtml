@@ -196,17 +196,45 @@
         type: 'line',
         data: {
             labels: [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(x => $"\"{x.Label}\"")))],
-            datasets: [{
+                datasets: [{
                 data: [@Html.Raw(string.Join(",", Model.MonthlyRevenue.Select(x => x.Revenue.ToString("F2"))))],
                 borderColor: '#4f8ef7',
                 backgroundColor: 'rgba(79,142,247,0.1)',
                 borderWidth: 2,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#4f8ef7'
+                pointBackgroundColor: '#4f8ef7',
+                pointRadius: 5,
+                pointHoverRadius: 7
             }]
         },
-        options: { responsive: true, animation: { duration: 900 }, ...chartDefaults }
+        options: {
+            responsive: true,
+            animation: { duration: 900 },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e2235',
+                    borderColor: 'rgba(255,255,255,0.08)',
+                    borderWidth: 1,
+                    titleColor: '#9099b0',
+                    bodyColor: '#f0f0f5',
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: ctx => ' $' + ctx.parsed.y.toLocaleString('en-CA', { minimumFractionDigits: 2 })
+                    }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#9099b0', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                y: { ticks: { color: '#9099b0', font: { size: 11 }, callback: v => '$' + v.toLocaleString() }, grid: { color: 'rgba(255,255,255,0.04)' } }
+            }
+        }
     });
 
     // Category Doughnut
