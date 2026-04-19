@@ -32,5 +32,6 @@ app.MapControllerRoute(
     pattern: "{controller=Dashboard}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 
 app.Run();
