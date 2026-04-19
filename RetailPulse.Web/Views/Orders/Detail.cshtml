@@ -1,0 +1,118 @@
+﻿@model RetailPulse.Web.Models.SalesOrder
+
+<div class="page-header">
+    <div>
+        <h1>Order #@Model.OrderId</h1>
+        <p>@Model.Customer.FullName — @Model.OrderDate.ToString("MMMM d, yyyy")</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Orders</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="grid-2" style="margin-bottom: 24px;">
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Order Info</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div>
+                <div style="font-size: 11px; color: var(--text-faint); margin-bottom: 3px;">CUSTOMER</div>
+                <div style="font-weight: 600;">@Model.Customer.FullName</div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--text-faint); margin-bottom: 3px;">ORDER DATE</div>
+                <div style="font-family: var(--font-mono); font-size: 12px;">@Model.OrderDate.ToString("MMMM d, yyyy h:mm tt")</div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--text-faint); margin-bottom: 3px;">STATUS</div>
+                @switch (Model.Status)
+                {
+                    case "Completed":
+                        <span class="badge badge-green">Completed</span>
+                        break;
+                    case "Pending":
+                        <span class="badge badge-yellow">Pending</span>
+                        break;
+                    case "Cancelled":
+                        <span class="badge badge-red">Cancelled</span>
+                        break;
+                    default:
+                        <span class="badge badge-blue">@Model.Status</span>
+                        break;
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div>
+                    <div style="font-size: 11px; color: var(--text-faint); margin-bottom: 3px;">NOTES</div>
+                    <div style="color: var(--text-secondary);">@Model.Notes</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Order Total</span>
+        </div>
+        <div style="font-size: 36px; font-weight: 700; font-family: var(--font-mono); color: var(--accent); margin-bottom: 20px;">
+            $@Model.TotalAmount.ToString("N2")
+        </div>
+
+        @if (Model.Status == "Pending")
+        {
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <form asp-action="UpdateStatus" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.OrderId" />
+                    <input type="hidden" name="status" value="Completed" />
+                    <button type="submit" class="btn btn-primary">Mark Completed</button>
+                </form>
+                <form asp-action="UpdateStatus" method="post" style="display:inline;"
+                      onsubmit="return confirm('Cancel this order?')">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.OrderId" />
+                    <input type="hidden" name="status" value="Cancelled" />
+                    <button type="submit" class="btn btn-danger">Cancel Order</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card animate-in">
+    <div class="card-header">
+        <span class="card-title">Order Items</span>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Line Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td style="font-weight: 600;">@item.Product.Name</td>
+                        <td style="font-family: var(--font-mono); color: var(--text-secondary);">@item.Product.SKU</td>
+                        <td style="font-family: var(--font-mono);">$@item.UnitPrice.ToString("N2")</td>
+                        <td style="font-family: var(--font-mono);">@item.Quantity</td>
+                        <td style="font-family: var(--font-mono); font-weight: 600;">
+                            $@((item.UnitPrice * item.Quantity).ToString("N2"))
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

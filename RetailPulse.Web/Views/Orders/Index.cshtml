@@ -1,0 +1,73 @@
+﻿@model IEnumerable<RetailPulse.Web.Models.SalesOrder>
+
+<div class="page-header">
+    <div>
+        <h1>Sales Orders</h1>
+        <p>Track and manage all customer orders</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        New Order
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="card animate-in">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td style="font-family: var(--font-mono); font-weight: 600;">#@o.OrderId</td>
+                        <td>@o.Customer.FullName</td>
+                        <td style="color: var(--text-secondary); font-size: 12px; font-family: var(--font-mono);">
+                            @o.OrderDate.ToString("MMM d, yyyy")
+                        </td>
+                        <td><span class="badge badge-blue">@o.Items.Count items</span></td>
+                        <td style="font-family: var(--font-mono);">$@o.TotalAmount.ToString("N2")</td>
+                        <td>
+                            @switch (o.Status)
+                            {
+                                case "Completed":
+                                    <span class="badge badge-green">Completed</span>
+                                    break;
+                                case "Pending":
+                                    <span class="badge badge-yellow">Pending</span>
+                                    break;
+                                case "Cancelled":
+                                    <span class="badge badge-red">Cancelled</span>
+                                    break;
+                                default:
+                                    <span class="badge badge-blue">@o.Status</span>
+                                    break;
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Detail" asp-route-id="@o.OrderId"
+                               class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

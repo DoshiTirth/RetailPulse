@@ -57,5 +57,36 @@ public class AppDbContext : DbContext
         // ─── RestockLog ───────────────────────────────────────
         modelBuilder.Entity<RestockLog>()
             .Property(r => r.Notes).HasMaxLength(300);
+
+        // ─── Relationships (explicit FK mapping) ─────────────────
+        modelBuilder.Entity<SalesOrderItem>()
+            .HasOne(i => i.SalesOrder)
+            .WithMany(o => o.Items)
+            .HasForeignKey(i => i.OrderId);
+
+        modelBuilder.Entity<SalesOrderItem>()
+            .HasOne(i => i.Product)
+            .WithMany(p => p.SalesOrderItems)
+            .HasForeignKey(i => i.ProductId);
+
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.Category)
+            .WithMany(c => c.Products)
+            .HasForeignKey(p => p.CategoryId);
+
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.Supplier)
+            .WithMany(s => s.Products)
+            .HasForeignKey(p => p.SupplierId);
+
+        modelBuilder.Entity<SalesOrder>()
+            .HasOne(o => o.Customer)
+            .WithMany(c => c.SalesOrders)
+            .HasForeignKey(o => o.CustomerId);
+
+        modelBuilder.Entity<RestockLog>()
+            .HasOne(r => r.Product)
+            .WithMany(p => p.RestockLogs)
+            .HasForeignKey(r => r.ProductId);
     }
 }

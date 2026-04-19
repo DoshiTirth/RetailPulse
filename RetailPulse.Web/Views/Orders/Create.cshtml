@@ -1,0 +1,90 @@
+﻿@model RetailPulse.Web.Models.ViewModels.CreateOrderViewModel
+
+<div class="page-header">
+    <div>
+        <h1>New Order</h1>
+        <p>Create a new sales order</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">Back to Orders</a>
+</div>
+
+<div class="card animate-in" style="max-width: 780px;">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="CustomerId">Customer</label>
+            <select asp-for="CustomerId" asp-items="ViewBag.Customers">
+                <option value="">-- Select Customer --</option>
+            </select>
+            <span asp-validation-for="CustomerId" class="field-validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Notes">Notes (optional)</label>
+            <textarea asp-for="Notes" rows="2" placeholder="Any special instructions..."></textarea>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary);
+                        text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 12px;">
+                Order Items
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px;
+                        font-size: 11px; color: var(--text-faint); text-transform: uppercase;
+                        letter-spacing: 0.6px; margin-bottom: 8px; padding: 0 2px;">
+                <span>Product</span>
+                <span>Qty</span>
+            </div>
+
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <div style="display: grid; grid-template-columns: 1fr 80px; gap: 8px; margin-bottom: 8px;">
+                    <select name="Items[@i].ProductId" class="product-select">
+                        <option value="0">-- Select Product --</option>
+                        @foreach (var p in (dynamic)ViewBag.Products)
+                        {
+                            <option value="@p.ProductId" data-price="@p.UnitPrice">
+                                @p.Name — $@p.UnitPrice.ToString("N2")
+                            </option>
+                        }
+                    </select>
+                    <input type="number" name="Items[@i].Quantity" value="1" min="1"
+                           style="text-align: center;" />
+                </div>
+            }
+        </div>
+
+        <div style="background: var(--bg-surface2); border-radius: var(--radius-sm);
+                    padding: 14px 16px; margin-bottom: 20px; display: flex;
+                    justify-content: space-between; align-items: center;">
+            <span style="font-size: 13px; color: var(--text-secondary);">Estimated Total</span>
+            <span id="orderTotal" style="font-size: 20px; font-weight: 700;
+                                         font-family: var(--font-mono); color: var(--accent);">$0.00</span>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function recalcTotal() {
+            let total = 0;
+            document.querySelectorAll('.product-select').forEach((sel, i) => {
+                const price = parseFloat(sel.selectedOptions[0]?.dataset.price || 0);
+                const qty   = parseInt(document.querySelectorAll('input[type=number]')[i]?.value || 1);
+                if (sel.value !== '0') total += price * qty;
+            });
+            document.getElementById('orderTotal').textContent =
+                '$' + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        document.querySelectorAll('.product-select, input[type=number]')
+                .forEach(el => el.addEventListener('change', recalcTotal));
+    </script>
+}
