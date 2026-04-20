@@ -60,9 +60,16 @@
                             <div style="display: flex; gap: 8px;">
                                 <a asp-action="Edit" asp-route-id="@s.SupplierId"
                                    class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
-                                <form asp-action="ToggleActive" asp-route-id="@s.SupplierId" method="post" style="display:inline;">
+                                <form asp-action="ToggleActive" asp-route-id="@s.SupplierId" method="post"
+                                      style="display:inline;"
+                                      data-confirm
+                                      data-confirm-title="@(s.IsActive ? "Deactivate Supplier" : "Activate Supplier")"
+                                      data-confirm-message="@(s.IsActive ? $"Deactivate {s.Name}?" : $"Activate {s.Name}?")"
+                                      data-confirm-btn="@(s.IsActive ? "Deactivate" : "Activate")"
+                                      data-confirm-danger="@(s.IsActive ? "true" : "false")">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn @(s.IsActive ? "btn-danger" : "btn-primary")"
+                                    <button type="submit"
+                                            class="btn @(s.IsActive ? "btn-danger" : "btn-primary")"
                                             style="padding: 5px 10px; font-size: 12px;">
                                         @(s.IsActive ? "Deactivate" : "Activate")
                                     </button>

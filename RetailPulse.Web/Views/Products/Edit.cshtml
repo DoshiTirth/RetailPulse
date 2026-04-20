@@ -11,59 +11,85 @@
 <div class="card animate-in" style="max-width: 680px;">
     <form asp-action="Edit" method="post">
         @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="ProductId" />
-        <input type="hidden" asp-for="CreatedAt" />
+        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+        <input type="hidden" name="CreatedAt" value="@Model.CreatedAt.ToString("o")" />
 
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" />
-                <span asp-validation-for="Name" class="field-validation-error"></span>
+                <label>Product Name</label>
+                <input type="text" name="Name" value="@Model.Name" required />
             </div>
             <div class="form-group">
-                <label asp-for="SKU"></label>
-                <input asp-for="SKU" />
-                <span asp-validation-for="SKU" class="field-validation-error"></span>
+                <label>SKU</label>
+                <input type="text" name="SKU" value="@Model.SKU" required />
             </div>
         </div>
 
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="CategoryId">Category</label>
-                <select asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
-                <span asp-validation-for="CategoryId" class="field-validation-error"></span>
+                <label>Category</label>
+                <select name="CategoryId" required>
+                    <option value="">-- Select Category --</option>
+                    @foreach (SelectListItem item in ViewBag.Categories)
+                    {
+                        if (item.Selected)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="SupplierId">Supplier</label>
-                <select asp-for="SupplierId" asp-items="ViewBag.Suppliers"></select>
-                <span asp-validation-for="SupplierId" class="field-validation-error"></span>
+                <label>Supplier</label>
+                <select name="SupplierId" required>
+                    <option value="">-- Select Supplier --</option>
+                    @foreach (SelectListItem item in ViewBag.Suppliers)
+                    {
+                        if (item.Selected)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
             </div>
         </div>
 
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="UnitPrice">Unit Price ($)</label>
-                <input asp-for="UnitPrice" type="number" step="0.01" min="0" />
-                <span asp-validation-for="UnitPrice" class="field-validation-error"></span>
+                <label>Unit Price ($)</label>
+                <input type="number" name="UnitPrice" value="@Model.UnitPrice" step="0.01" min="0" required />
             </div>
             <div class="form-group">
-                <label asp-for="StockQuantity">Stock Quantity</label>
-                <input asp-for="StockQuantity" type="number" min="0" />
-                <span asp-validation-for="StockQuantity" class="field-validation-error"></span>
+                <label>Stock Quantity</label>
+                <input type="number" name="StockQuantity" value="@Model.StockQuantity" min="0" required />
             </div>
         </div>
 
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="ReorderLevel">Reorder Level</label>
-                <input asp-for="ReorderLevel" type="number" min="0" />
-                <span asp-validation-for="ReorderLevel" class="field-validation-error"></span>
+                <label>Reorder Level</label>
+                <input type="number" name="ReorderLevel" value="@Model.ReorderLevel" min="0" required />
             </div>
             <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px;">
-                <label style="display: flex; align-items: center; gap: 8px; text-transform: none; font-size: 13px; cursor: pointer;">
-                    <input asp-for="IsActive" type="checkbox" style="width: auto; accent-color: var(--accent);" />
+                <label style="display: flex; align-items: center; gap: 8px;
+                              text-transform: none; font-size: 13px; cursor: pointer;">
+                    <input type="checkbox" name="IsActive" value="true"
+                           @(Model.IsActive ? "checked" : "")
+                           style="width: auto; accent-color: var(--accent);" />
                     Active Product
                 </label>
+                @if (Model.IsActive)
+                {
+                    <input type="hidden" name="IsActive" value="false" />
+                }
             </div>
         </div>
 

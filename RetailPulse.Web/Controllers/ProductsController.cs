@@ -16,13 +16,31 @@ public class ProductsController : Controller
     }
 
     // LIST
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? category, string? status, string? search)
     {
-        var products = await _db.Products
+        var query = _db.Products
             .Include(p => p.Category)
             .Include(p => p.Supplier)
-            .OrderBy(p => p.Name)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+            query = query.Where(p => p.Name.Contains(search) || p.SKU.Contains(search));
+
+        if (!string.IsNullOrEmpty(category))
+            query = query.Where(p => p.Category.Name == category);
+
+        if (status == "active")
+            query = query.Where(p => p.IsActive);
+        else if (status == "inactive")
+            query = query.Where(p => !p.IsActive);
+
+        var products = await query.OrderBy(p => p.Name).ToListAsync();
+        var categories = await _db.Categories.OrderBy(c => c.Name).ToListAsync();
+
+        ViewBag.Categories = categories;
+        ViewBag.FilterCat = category;
+        ViewBag.FilterStatus = status;
+        ViewBag.FilterSearch = search;
 
         ViewData["Title"] = "Products";
         ViewData["ActivePage"] = "Products";
@@ -35,27 +53,52 @@ public class ProductsController : Controller
         await PopulateDropdowns();
         ViewData["Title"] = "Add Product";
         ViewData["ActivePage"] = "Products";
-        return View();
+        return View(new Product { ReorderLevel = 10, StockQuantity = 0, IsActive = true });
     }
 
     // CREATE — POST
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Product product)
+    public async Task<IActionResult> Create(
+        string Name, string SKU, int CategoryId, int SupplierId,
+        decimal UnitPrice, int StockQuantity, int ReorderLevel)
     {
-        if (ModelState.IsValid)
+        var existing = await _db.Products.AnyAsync(p => p.SKU == SKU);
+        if (existing)
         {
-            product.CreatedAt = DateTime.UtcNow;
-            _db.Products.Add(product);
-            await _db.SaveChangesAsync();
-            TempData["Success"] = $"Product '{product.Name}' added successfully.";
-            return RedirectToAction(nameof(Index));
+            TempData["Error"] = $"SKU '{SKU}' already exists.";
+            await PopulateDropdowns(CategoryId, SupplierId);
+            ViewData["Title"] = "Add Product";
+            ViewData["ActivePage"] = "Products";
+            return View(new Product
+            {
+                Name = Name,
+                SKU = SKU,
+                CategoryId = CategoryId,
+                SupplierId = SupplierId,
+                UnitPrice = UnitPrice,
+                StockQuantity = StockQuantity,
+                ReorderLevel = ReorderLevel
+            });
         }
 
-        await PopulateDropdowns(product.CategoryId, product.SupplierId);
-        ViewData["Title"] = "Add Product";
-        ViewData["ActivePage"] = "Products";
-        return View(product);
+        var product = new Product
+        {
+            Name = Name,
+            SKU = SKU,
+            CategoryId = CategoryId,
+            SupplierId = SupplierId,
+            UnitPrice = UnitPrice,
+            StockQuantity = StockQuantity,
+            ReorderLevel = ReorderLevel,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _db.Products.Add(product);
+        await _db.SaveChangesAsync();
+        TempData["Success"] = $"Product '{product.Name}' added successfully.";
+        return RedirectToAction(nameof(Index));
     }
 
     // EDIT — GET
@@ -73,25 +116,43 @@ public class ProductsController : Controller
     // EDIT — POST
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Product product)
+    public async Task<IActionResult> Edit(
+        int ProductId, string Name, string SKU, int CategoryId, int SupplierId,
+        decimal UnitPrice, int StockQuantity, int ReorderLevel, bool IsActive,
+        DateTime CreatedAt)
     {
-        if (id != product.ProductId) return NotFound();
+        var product = await _db.Products.FindAsync(ProductId);
+        if (product == null) return NotFound();
 
-        if (ModelState.IsValid)
-        {
-            _db.Update(product);
-            await _db.SaveChangesAsync();
-            TempData["Success"] = $"Product '{product.Name}' updated successfully.";
-            return RedirectToAction(nameof(Index));
-        }
+        product.Name = Name;
+        product.SKU = SKU;
+        product.CategoryId = CategoryId;
+        product.SupplierId = SupplierId;
+        product.UnitPrice = UnitPrice;
+        product.StockQuantity = StockQuantity;
+        product.ReorderLevel = ReorderLevel;
+        product.IsActive = IsActive;
 
-        await PopulateDropdowns(product.CategoryId, product.SupplierId);
-        ViewData["Title"] = "Edit Product";
-        ViewData["ActivePage"] = "Products";
-        return View(product);
+        await _db.SaveChangesAsync();
+        TempData["Success"] = $"Product '{product.Name}' updated successfully.";
+        return RedirectToAction(nameof(Index));
     }
 
-    // DELETE — POST
+    // TOGGLE ACTIVE — POST
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleActive(int id)
+    {
+        var product = await _db.Products.FindAsync(id);
+        if (product == null) return NotFound();
+
+        product.IsActive = !product.IsActive;
+        await _db.SaveChangesAsync();
+        TempData["Success"] = $"Product '{product.Name}' {(product.IsActive ? "activated" : "deactivated")}.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // HARD DELETE — POST (only if no orders)
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
@@ -99,9 +160,16 @@ public class ProductsController : Controller
         var product = await _db.Products.FindAsync(id);
         if (product == null) return NotFound();
 
-        product.IsActive = false;
+        var hasOrders = await _db.SalesOrderItems.AnyAsync(i => i.ProductId == id);
+        if (hasOrders)
+        {
+            TempData["Error"] = $"'{product.Name}' cannot be deleted — it has sales orders. Use Deactivate instead.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        _db.Products.Remove(product);
         await _db.SaveChangesAsync();
-        TempData["Success"] = $"Product '{product.Name}' deactivated.";
+        TempData["Success"] = $"Product '{product.Name}' permanently deleted.";
         return RedirectToAction(nameof(Index));
     }
 

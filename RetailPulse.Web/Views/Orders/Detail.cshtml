@@ -72,8 +72,13 @@
                     <input type="hidden" name="status" value="Completed" />
                     <button type="submit" class="btn btn-primary">Mark Completed</button>
                 </form>
-                <form asp-action="UpdateStatus" method="post" style="display:inline;"
-                      onsubmit="return confirm('Cancel this order?')">
+                <form asp-action="UpdateStatus" method="post"
+                      style="display:inline;"
+                      data-confirm
+                      data-confirm-title="Cancel Order"
+                      data-confirm-message="Cancel order #@Model.OrderId? This cannot be undone."
+                      data-confirm-btn="Cancel Order"
+                      data-confirm-danger="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" value="@Model.OrderId" />
                     <input type="hidden" name="status" value="Cancelled" />
