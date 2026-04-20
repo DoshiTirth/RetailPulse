@@ -46,8 +46,13 @@
                         <td>
                             <div style="display: flex; gap: 8px;">
                                 <a asp-action="Edit" asp-route-id="@c.CategoryId" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
-                                <form asp-action="Delete" asp-route-id="@c.CategoryId" method="post" style="display:inline;"
-                                      onsubmit="return confirm('Delete @c.Name?')">
+                                <form asp-action="Delete" asp-route-id="@c.CategoryId" method="post"
+                                      style="display:inline;"
+                                      data-confirm
+                                      data-confirm-title="Delete Category"
+                                      data-confirm-message="Delete '@c.Name'? This cannot be undone."
+                                      data-confirm-btn="Delete"
+                                      data-confirm-danger="true">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Delete</button>
                                 </form>

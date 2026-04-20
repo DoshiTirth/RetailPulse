@@ -18,8 +18,67 @@
 {
     <div class="alert alert-success">@TempData["Success"]</div>
 }
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Filter Bar -->
+<div class="card animate-in" style="margin-bottom: 16px; padding: 16px 24px;">
+    <form asp-action="Index" method="get" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 1; min-width: 180px;">
+            <label style="font-size: 11px; color: var(--text-faint); margin-bottom: 4px; display: block;">SEARCH</label>
+            <input type="text" name="search" value="@ViewBag.FilterSearch" placeholder="Product name or SKU..." />
+        </div>
+        <div style="min-width: 160px;">
+            <label style="font-size: 11px; color: var(--text-faint); margin-bottom: 4px; display: block;">CATEGORY</label>
+            <select name="category">
+                <option value="">All Categories</option>
+                @foreach (var c in (List<RetailPulse.Web.Models.Category>)ViewBag.Categories)
+                {
+                    if (ViewBag.FilterCat == c.Name)
+                    {
+                        <option value="@c.Name" selected>@c.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@c.Name">@c.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div style="min-width: 140px;">
+            <label style="font-size: 11px; color: var(--text-faint); margin-bottom: 4px; display: block;">STATUS</label>
+            <select name="status">
+                <option value="">All</option>
+                @if (ViewBag.FilterStatus == "active")
+                {
+                    <option value="active" selected>Active</option>
+                    <option value="inactive">Inactive</option>
+                }
+                else if (ViewBag.FilterStatus == "inactive")
+                {
+                    <option value="active">Active</option>
+                    <option value="inactive" selected>Inactive</option>
+                }
+                else
+                {
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                }
+            </select>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button type="submit" class="btn btn-primary" style="padding: 9px 16px;">Filter</button>
+            <a asp-action="Index" class="btn btn-ghost" style="padding: 9px 16px;">Clear</a>
+        </div>
+    </form>
+</div>
 
 <div class="card animate-in">
+    <div style="font-size: 12px; color: var(--text-faint); margin-bottom: 12px;">
+        Showing @Model.Count() product(s)
+    </div>
     <div class="table-wrap">
         <table>
             <thead>
@@ -65,11 +124,36 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px;">
-                                <a asp-action="Edit" asp-route-id="@p.ProductId" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
-                                <form asp-action="Delete" asp-route-id="@p.ProductId" method="post" style="display:inline;"
-                                      onsubmit="return confirm('Deactivate @p.Name?')">
+                                <a asp-action="Edit" asp-route-id="@p.ProductId"
+                                   class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                <form method="post"
+                                      action="/Products/ToggleActive/@p.ProductId"
+                                      style="display:inline;"
+                                      data-confirm
+                                      data-confirm-title="@(p.IsActive ? "Deactivate Product" : "Activate Product")"
+                                      data-confirm-message="@(p.IsActive ? $"Deactivate {p.Name}? It will be hidden from the active catalogue." : $"Activate {p.Name}? It will appear in the active catalogue.")"
+                                      data-confirm-btn="@(p.IsActive ? "Deactivate" : "Activate")"
+                                      data-confirm-danger="@(p.IsActive ? "true" : "false")">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Deactivate</button>
+                                    <button type="submit"
+                                            class="btn @(p.IsActive ? "btn-danger" : "btn-primary")"
+                                            style="padding: 5px 10px; font-size: 12px;">
+                                        @(p.IsActive ? "Deactivate" : "Activate")
+                                    </button>
+                                </form>
+                                <form method="post"
+                                      action="/Products/Delete/@p.ProductId"
+                                      style="display:inline;"
+                                      data-confirm
+                                      data-confirm-title="Delete Product"
+                                      data-confirm-message="Permanently delete '@p.Name'? This cannot be undone. Products with sales orders cannot be deleted."
+                                      data-confirm-btn="Delete"
+                                      data-confirm-danger="true">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger"
+                                            style="padding: 5px 10px; font-size: 12px; background: #7f1d1d;">
+                                        Delete
+                                    </button>
                                 </form>
                             </div>
                         </td>
