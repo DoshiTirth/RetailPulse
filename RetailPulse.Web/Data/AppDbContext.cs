@@ -14,6 +14,10 @@ public class AppDbContext : DbContext
     public DbSet<SalesOrder> SalesOrders { get; set; }
     public DbSet<SalesOrderItem> SalesOrderItems { get; set; }
     public DbSet<RestockLog> RestockLogs { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,5 +93,37 @@ public class AppDbContext : DbContext
             .HasOne(r => r.Product)
             .WithMany(p => p.RestockLogs)
             .HasForeignKey(r => r.ProductId);
+
+        // ─── Auth ─────────────────────────────────────────────
+        modelBuilder.Entity<Role>()
+            .HasKey(r => r.RoleId);
+
+        modelBuilder.Entity<Permission>()
+            .HasKey(p => p.PermissionId);
+
+        modelBuilder.Entity<User>()
+            .HasKey(u => u.UserId);
+
+        modelBuilder.Entity<RolePermission>()
+            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Role)
+            .WithMany(r => r.RolePermissions)
+            .HasForeignKey(rp => rp.RoleId);
+
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Permission)
+            .WithMany(p => p.RolePermissions)
+            .HasForeignKey(rp => rp.PermissionId);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Role)
+            .WithMany(r => r.Users)
+            .HasForeignKey(u => u.RoleId);
+
+        modelBuilder.Entity<Permission>()
+            .HasIndex(p => new { p.Module, p.Action })
+            .IsUnique();
     }
 }

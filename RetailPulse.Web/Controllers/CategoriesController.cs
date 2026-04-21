@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models;
+using RetailPulse.Web.Services;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -30,6 +31,8 @@ public class CategoriesController : Controller
     // CREATE — GET
     public IActionResult Create()
     {
+        if (!PermissionService.HasPermission(User, "Categories", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         ViewData["Title"] = "Add Category";
         ViewData["ActivePage"] = "Categories";
         return View();
@@ -40,6 +43,8 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Category category)
     {
+        if (!PermissionService.HasPermission(User, "Categories", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (ModelState.IsValid)
         {
             _db.Categories.Add(category);
@@ -56,6 +61,8 @@ public class CategoriesController : Controller
     // EDIT — GET
     public async Task<IActionResult> Edit(int id)
     {
+        if (!PermissionService.HasPermission(User, "Categories", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         var category = await _db.Categories.FindAsync(id);
         if (category == null) return NotFound();
 
@@ -69,6 +76,8 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Category category)
     {
+        if (!PermissionService.HasPermission(User, "Categories", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (id != category.CategoryId) return NotFound();
 
         if (ModelState.IsValid)
@@ -89,6 +98,8 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
+        if (!PermissionService.HasPermission(User, "Categories", "Delete"))
+            return RedirectToAction("AccessDenied", "Auth");
         var category = await _db.Categories.FindAsync(id);
         if (category == null) return NotFound();
 

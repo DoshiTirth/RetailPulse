@@ -124,37 +124,46 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px;">
-                                <a asp-action="Edit" asp-route-id="@p.ProductId"
-                                   class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
-                                <form method="post"
-                                      action="/Products/ToggleActive/@p.ProductId"
-                                      style="display:inline;"
-                                      data-confirm
-                                      data-confirm-title="@(p.IsActive ? "Deactivate Product" : "Activate Product")"
-                                      data-confirm-message="@(p.IsActive ? $"Deactivate {p.Name}? It will be hidden from the active catalogue." : $"Activate {p.Name}? It will appear in the active catalogue.")"
-                                      data-confirm-btn="@(p.IsActive ? "Deactivate" : "Activate")"
-                                      data-confirm-danger="@(p.IsActive ? "true" : "false")">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit"
-                                            class="btn @(p.IsActive ? "btn-danger" : "btn-primary")"
-                                            style="padding: 5px 10px; font-size: 12px;">
-                                        @(p.IsActive ? "Deactivate" : "Activate")
-                                    </button>
-                                </form>
-                                <form method="post"
-                                      action="/Products/Delete/@p.ProductId"
-                                      style="display:inline;"
-                                      data-confirm
-                                      data-confirm-title="Delete Product"
-                                      data-confirm-message="Permanently delete '@p.Name'? This cannot be undone. Products with sales orders cannot be deleted."
-                                      data-confirm-btn="Delete"
-                                      data-confirm-danger="true">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger"
-                                            style="padding: 5px 10px; font-size: 12px; background: #7f1d1d;">
-                                        Delete
-                                    </button>
-                                </form>
+                                @if (PermissionService.HasPermission(User, "Products", "Edit"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@p.ProductId"
+                                       class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                }
+                                @if (PermissionService.HasPermission(User, "Products", "Deactivate"))
+                                {
+                                    <form method="post"
+                                          action="/Products/ToggleActive/@p.ProductId"
+                                          style="display:inline;"
+                                          data-confirm
+                                          data-confirm-title="@(p.IsActive ? "Deactivate Product" : "Activate Product")"
+                                          data-confirm-message="@(p.IsActive ? $"Deactivate {p.Name}? It will be hidden from the active catalogue." : $"Activate {p.Name}? It will appear in the active catalogue.")"
+                                          data-confirm-btn="@(p.IsActive ? "Deactivate" : "Activate")"
+                                          data-confirm-danger="@(p.IsActive ? "true" : "false")">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn @(p.IsActive ? "btn-danger" : "btn-primary")"
+                                                style="padding: 5px 10px; font-size: 12px;">
+                                            @(p.IsActive ? "Deactivate" : "Activate")
+                                        </button>
+                                    </form>
+                                }
+                                @if (PermissionService.HasPermission(User, "Products", "Delete"))
+                                {
+                                    <form method="post"
+                                          action="/Products/Delete/@p.ProductId"
+                                          style="display:inline;"
+                                          data-confirm
+                                          data-confirm-title="Delete Product"
+                                          data-confirm-message="Permanently delete '@p.Name'? This cannot be undone."
+                                          data-confirm-btn="Delete"
+                                          data-confirm-danger="true">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger"
+                                                style="padding: 5px 10px; font-size: 12px; background: #7f1d1d;">
+                                            Delete
+                                        </button>
+                                    </form>
+                                }
                             </div>
                         </td>
                     </tr>

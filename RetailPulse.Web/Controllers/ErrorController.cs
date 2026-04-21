@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RetailPulse.Web.Controllers;
 
+[AllowAnonymous]
 public class ErrorController : Controller
 {
     [Route("error/{code}")]

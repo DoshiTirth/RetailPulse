@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models;
+using RetailPulse.Web.Services;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -30,6 +31,8 @@ public class SuppliersController : Controller
     // CREATE — GET
     public IActionResult Create()
     {
+        if (!PermissionService.HasPermission(User, "Suppliers", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         ViewData["Title"] = "Add Supplier";
         ViewData["ActivePage"] = "Suppliers";
         return View();
@@ -40,6 +43,8 @@ public class SuppliersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Supplier supplier)
     {
+        if (!PermissionService.HasPermission(User, "Suppliers", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (ModelState.IsValid)
         {
             supplier.CreatedAt = DateTime.UtcNow;
@@ -57,6 +62,8 @@ public class SuppliersController : Controller
     // EDIT — GET
     public async Task<IActionResult> Edit(int id)
     {
+        if (!PermissionService.HasPermission(User, "Suppliers", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         var supplier = await _db.Suppliers.FindAsync(id);
         if (supplier == null) return NotFound();
 
@@ -70,6 +77,8 @@ public class SuppliersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Supplier supplier)
     {
+        if (!PermissionService.HasPermission(User, "Suppliers", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (id != supplier.SupplierId) return NotFound();
 
         if (ModelState.IsValid)
@@ -90,6 +99,8 @@ public class SuppliersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleActive(int id)
     {
+        if (!PermissionService.HasPermission(User, "Suppliers", "Deactivate"))
+            return RedirectToAction("AccessDenied", "Auth");
         var supplier = await _db.Suppliers.FindAsync(id);
         if (supplier == null) return NotFound();
 

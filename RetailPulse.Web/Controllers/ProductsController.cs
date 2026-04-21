@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models;
+using RetailPulse.Web.Services;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -50,6 +51,8 @@ public class ProductsController : Controller
     // CREATE — GET
     public async Task<IActionResult> Create()
     {
+        if (!PermissionService.HasPermission(User, "Products", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         await PopulateDropdowns();
         ViewData["Title"] = "Add Product";
         ViewData["ActivePage"] = "Products";
@@ -121,6 +124,8 @@ public class ProductsController : Controller
         decimal UnitPrice, int StockQuantity, int ReorderLevel, bool IsActive,
         DateTime CreatedAt)
     {
+        if (!PermissionService.HasPermission(User, "Products", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         var product = await _db.Products.FindAsync(ProductId);
         if (product == null) return NotFound();
 
@@ -143,6 +148,8 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleActive(int id)
     {
+        if (!PermissionService.HasPermission(User, "Products", "Deactivate"))
+            return RedirectToAction("AccessDenied", "Auth");
         var product = await _db.Products.FindAsync(id);
         if (product == null) return NotFound();
 
@@ -157,6 +164,8 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
+        if (!PermissionService.HasPermission(User, "Products", "Delete"))
+            return RedirectToAction("AccessDenied", "Auth");
         var product = await _db.Products.FindAsync(id);
         if (product == null) return NotFound();
 
