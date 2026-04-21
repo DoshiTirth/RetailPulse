@@ -5,6 +5,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models.ViewModels;
+using RetailPulse.Web.Services;
 using System.Text;
 
 namespace RetailPulse.Web.Controllers;
@@ -31,6 +32,8 @@ public class ReportsController : Controller
     [HttpPost]
     public async Task<IActionResult> Preview(string reportType)
     {
+        if (!PermissionService.HasPermission(User, "Reports", "View"))
+            return RedirectToAction("AccessDenied", "Auth");
         var vm = await BuildReportViewModel();
         vm.SelectedReport = reportType;
         ViewData["Title"] = "Reports";
@@ -41,6 +44,8 @@ public class ReportsController : Controller
     // DOWNLOAD CSV
     public async Task<IActionResult> DownloadCsv(string reportType)
     {
+        if (!PermissionService.HasPermission(User, "Reports", "Download"))
+            return RedirectToAction("AccessDenied", "Auth");
         var csv = await GenerateCsv(reportType);
         var bytes = Encoding.UTF8.GetBytes(csv);
         var fileName = $"{reportType}_{DateTime.Now:yyyyMMdd}.csv";
@@ -50,6 +55,8 @@ public class ReportsController : Controller
     // DOWNLOAD PDF
     public async Task<IActionResult> DownloadPdf(string reportType)
     {
+        if (!PermissionService.HasPermission(User, "Reports", "Download"))
+            return RedirectToAction("AccessDenied", "Auth");
         var vm = await BuildReportViewModel();
         vm.SelectedReport = reportType;
 

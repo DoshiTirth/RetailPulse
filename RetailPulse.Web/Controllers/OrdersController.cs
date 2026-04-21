@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models;
 using RetailPulse.Web.Models.ViewModels;
+using RetailPulse.Web.Services;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -49,6 +50,8 @@ public class OrdersController : Controller
     // CREATE — GET
     public async Task<IActionResult> Create()
     {
+        if (!PermissionService.HasPermission(User, "Orders", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         await PopulateDropdowns();
         ViewData["Title"] = "New Order";
         ViewData["ActivePage"] = "Orders";
@@ -60,6 +63,8 @@ public class OrdersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateOrderViewModel vm)
     {
+        if (!PermissionService.HasPermission(User, "Orders", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (ModelState.IsValid)
         {
             var order = new SalesOrder
@@ -109,6 +114,8 @@ public class OrdersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
+        if (!PermissionService.HasPermission(User, "Orders", "UpdateStatus"))
+            return RedirectToAction("AccessDenied", "Auth");
         var order = await _db.SalesOrders.FindAsync(id);
         if (order == null) return NotFound();
 

@@ -1,0 +1,133 @@
+﻿@model IEnumerable<RetailPulse.Web.Models.User>
+
+<div class="page-header">
+    <div>
+        <h1>User Management</h1>
+        <p>Manage system users and their roles</p>
+    </div>
+    @if (PermissionService.HasPermission(User, "Users", "Add"))
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add User
+        </a>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!-- Role Summary Cards -->
+<div class="kpi-grid" style="margin-bottom: 24px;">
+    @foreach (var role in Model.GroupBy(u => u.Role.Name))
+    {
+        <div class="kpi-card animate-in">
+            <div class="kpi-label">@role.Key</div>
+            <div class="kpi-value">@role.Count()</div>
+            <div class="kpi-sub">@role.Count(u => u.IsActive) active</div>
+            <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+        </div>
+    }
+</div>
+
+<div class="card animate-in">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Last Login</th>
+                    <th>Created</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 30px; height: 30px; background: var(--accent-dim);
+                                                border: 1px solid var(--accent); border-radius: 50%;
+                                                display: flex; align-items: center; justify-content: center;
+                                                font-size: 12px; font-weight: 700; color: var(--accent);">
+                                    @u.Username.Substring(0, 1).ToUpper()
+                                </div>
+                                <span style="font-weight: 600;">@u.Username</span>
+                            </div>
+                        </td>
+                        <td style="color: var(--text-secondary);">@u.Email</td>
+                        <td>
+                            @{
+                                var badgeColor = u.Role.Name switch
+                                {
+                                    "SuperAdmin" => "badge-red",
+                                    "Admin" => "badge-blue",
+                                    "Manager" => "badge-green",
+                                    "Supervisor" => "badge-yellow",
+                                    _ => "badge-blue"
+                                };
+                            }
+                            <span class="badge @badgeColor">@u.Role.Name</span>
+                        </td>
+                        <td style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);">
+                            @(u.LastLoginAt.HasValue? u.LastLoginAt.Value.ToString("MMM d, yyyy h:mm tt") : "Never")
+                        </td>
+                        <td style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);">
+                            @u.CreatedAt.ToString("MMM d, yyyy")
+                        </td>
+                        <td>
+                            @if (u.IsActive)
+                            {
+                                <span class="badge badge-green">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-red">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                @if (PermissionService.HasPermission(User, "Users", "Edit"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@u.UserId"
+                                       class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                }
+                                @if (PermissionService.HasPermission(User, "Users", "Deactivate"))
+                                {
+                                    <form method="post"
+                                          action="/Users/ToggleActive/@u.UserId"
+                                          style="display:inline;"
+                                          data-confirm
+                                          data-confirm-title="@(u.IsActive ? "Deactivate User" : "Activate User")"
+                                          data-confirm-message="@(u.IsActive ? $"Deactivate {u.Username}?" : $"Activate {u.Username}?")"
+                                          data-confirm-btn="@(u.IsActive ? "Deactivate" : "Activate")"
+                                          data-confirm-danger="@(u.IsActive ? "true" : "false")">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn @(u.IsActive ? "btn-danger" : "btn-primary")"
+                                                style="padding: 5px 10px; font-size: 12px;">
+                                            @(u.IsActive ? "Deactivate" : "Activate")
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models;
+using RetailPulse.Web.Services;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -30,6 +31,8 @@ public class CustomersController : Controller
     // CREATE — GET
     public IActionResult Create()
     {
+        if (!PermissionService.HasPermission(User, "Customers", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         ViewData["Title"] = "Add Customer";
         ViewData["ActivePage"] = "Customers";
         return View();
@@ -40,6 +43,8 @@ public class CustomersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Customer customer)
     {
+        if (!PermissionService.HasPermission(User, "Customers", "Add"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (ModelState.IsValid)
         {
             customer.CreatedAt = DateTime.UtcNow;
@@ -57,6 +62,8 @@ public class CustomersController : Controller
     // EDIT — GET
     public async Task<IActionResult> Edit(int id)
     {
+        if (!PermissionService.HasPermission(User, "Customers", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         var customer = await _db.Customers.FindAsync(id);
         if (customer == null) return NotFound();
 
@@ -70,6 +77,8 @@ public class CustomersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Customer customer)
     {
+        if (!PermissionService.HasPermission(User, "Customers", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
         if (id != customer.CustomerId) return NotFound();
 
         if (ModelState.IsValid)

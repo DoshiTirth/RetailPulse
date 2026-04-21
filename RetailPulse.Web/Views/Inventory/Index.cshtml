@@ -98,10 +98,13 @@
                             }
                         </td>
                         <td>
-                            <a asp-action="Restock" asp-route-id="@p.ProductId"
-                               class="btn btn-primary" style="padding: 5px 12px; font-size: 12px;">
-                                Restock
-                            </a>
+                            @if (PermissionService.HasPermission(User, "Inventory", "Restock"))
+                            {
+                                <a asp-action="Restock" asp-route-id="@p.ProductId"
+                                   class="btn btn-primary" style="padding: 5px 12px; font-size: 12px;">
+                                    Restock
+                                </a>
+                            }
                         </td>
                     </tr>
                 }

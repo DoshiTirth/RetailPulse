@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RetailPulse.Web.Data;
 using RetailPulse.Web.Models;
+using RetailPulse.Web.Services;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -33,6 +34,8 @@ public class InventoryController : Controller
     // RESTOCK — GET
     public async Task<IActionResult> Restock(int id)
     {
+        if (!PermissionService.HasPermission(User, "Inventory", "Restock"))
+            return RedirectToAction("AccessDenied", "Auth");
         var product = await _db.Products
             .Include(p => p.Category)
             .Include(p => p.Supplier)
@@ -50,6 +53,8 @@ public class InventoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Restock(int id, int quantity, string? notes)
     {
+        if (!PermissionService.HasPermission(User, "Inventory", "Restock"))
+            return RedirectToAction("AccessDenied", "Auth");
         var product = await _db.Products.FindAsync(id);
         if (product == null) return NotFound();
 

@@ -63,7 +63,7 @@
             $@Model.TotalAmount.ToString("N2")
         </div>
 
-        @if (Model.Status == "Pending")
+        @if (PermissionService.HasPermission(User, "Orders", "UpdateStatus") && Model.Status == "Pending")
         {
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <form asp-action="UpdateStatus" method="post" style="display:inline;">
@@ -72,8 +72,7 @@
                     <input type="hidden" name="status" value="Completed" />
                     <button type="submit" class="btn btn-primary">Mark Completed</button>
                 </form>
-                <form asp-action="UpdateStatus" method="post"
-                      style="display:inline;"
+                <form asp-action="UpdateStatus" method="post" style="display:inline;"
                       data-confirm
                       data-confirm-title="Cancel Order"
                       data-confirm-message="Cancel order #@Model.OrderId? This cannot be undone."

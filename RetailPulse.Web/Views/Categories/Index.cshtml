@@ -5,13 +5,16 @@
         <h1>Categories</h1>
         <p>Manage product categories</p>
     </div>
-    <a asp-action="Create" class="btn btn-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        Add Category
-    </a>
+    @if (PermissionService.HasPermission(User, "Categories", "Add"))
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Category
+        </a>
+    }
 </div>
 
 @if (TempData["Success"] != null)
@@ -45,17 +48,27 @@
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px;">
-                                <a asp-action="Edit" asp-route-id="@c.CategoryId" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
-                                <form asp-action="Delete" asp-route-id="@c.CategoryId" method="post"
-                                      style="display:inline;"
-                                      data-confirm
-                                      data-confirm-title="Delete Category"
-                                      data-confirm-message="Delete '@c.Name'? This cannot be undone."
-                                      data-confirm-btn="Delete"
-                                      data-confirm-danger="true">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Delete</button>
-                                </form>
+                                @if (PermissionService.HasPermission(User, "Categories", "Edit"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@c.CategoryId"
+                                       class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                }
+                                @if (PermissionService.HasPermission(User, "Categories", "Delete"))
+                                {
+                                    <form asp-action="Delete" asp-route-id="@c.CategoryId" method="post"
+                                          style="display:inline;"
+                                          data-confirm
+                                          data-confirm-title="Delete Category"
+                                          data-confirm-message="Delete '@c.Name'? This cannot be undone."
+                                          data-confirm-btn="Delete"
+                                          data-confirm-danger="true">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger"
+                                                style="padding: 5px 10px; font-size: 12px;">
+                                            Delete
+                                        </button>
+                                    </form>
+                                }
                             </div>
                         </td>
                     </tr>
