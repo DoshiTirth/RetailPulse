@@ -32,14 +32,17 @@ No Python, no external BI tools, no Docker. Everything — data access, business
 ### Sales Orders
 ![Orders](RetailPulse.Web/wwwroot/screenshots/orders.png)
 
-### Reports & Analytics
-![Reports](RetailPulse.Web/wwwroot/screenshots/reports.png)
+### Reports & Analytics (Dark Mode)
+![Reports Dark](RetailPulse.Web/wwwroot/screenshots/reports.png)
 
-### Login
-![Login](RetailPulse.Web/wwwroot/screenshots/login.png)
+### Reports & Analytics (Light Mode)
+![Reports Light](RetailPulse.Web/wwwroot/screenshots/Reports_Light.png)
 
 ### User Management
 ![Users](RetailPulse.Web/wwwroot/screenshots/users.png)
+
+### Login
+![Login](RetailPulse.Web/wwwroot/screenshots/login.png)
 
 ---
 
