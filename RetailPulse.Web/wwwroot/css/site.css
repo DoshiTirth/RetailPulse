@@ -779,3 +779,29 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Nav Icon */
+.nav-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    transition: background var(--transition-fast);
+}
+
+.nav-item:hover .nav-icon {
+    background: var(--color-secondary);
+}
+
+.nav-item.active .nav-icon {
+    background: var(--color-accent-dim);
+}
+
+.nav-item svg {
+    width: 15px;
+    height: 15px;
+}

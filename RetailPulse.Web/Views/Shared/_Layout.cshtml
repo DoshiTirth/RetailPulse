@@ -15,18 +15,20 @@
 
         <!-- Sidebar -->
         <aside class="sidebar">
+            <!-- Logo -->
             <div class="sidebar-logo">
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
                     <div style="
-                        width: 32px; height: 32px;
-                        background: var(--accent);
-                        border-radius: 8px;
-                        display: flex; align-items: center; justify-content: center;
-                        flex-shrink: 0;">
+                width: 36px; height: 36px;
+                background: var(--color-accent);
+                border-radius: 10px;
+                display: flex; align-items: center; justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(34,197,94,0.3);">
                         <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                             <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-                                  font-family="'Segoe UI', system-ui, sans-serif"
-                                  font-size="14" font-weight="700" fill="white">RP</text>
+                                  font-family="'Rubik', system-ui" font-size="14"
+                                  font-weight="700" fill="white">RP</text>
                         </svg>
                     </div>
                     <div>
@@ -36,115 +38,166 @@
                 </div>
             </div>
 
-            <nav class="nav-section">
-                <div class="nav-section-label">Overview</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")"
-                   asp-controller="Dashboard" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                    </svg>
-                    Dashboard
-                </a>
-            </nav>
+            <!-- Navigation -->
+            <nav style="flex: 1; padding: 12px 0;">
 
-            <nav class="nav-section">
-                <div class="nav-section-label">Catalogue</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Products" ? "active" : "")"
-                   asp-controller="Products" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    </svg>
-                    Products
-                </a>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Categories" ? "active" : "")"
-                   asp-controller="Categories" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="8" y1="6" x2="21" y2="6" />
-                        <line x1="8" y1="12" x2="21" y2="12" />
-                        <line x1="8" y1="18" x2="21" y2="18" />
-                        <line x1="3" y1="6" x2="3.01" y2="6" />
-                        <line x1="3" y1="12" x2="3.01" y2="12" />
-                        <line x1="3" y1="18" x2="3.01" y2="18" />
-                    </svg>
-                    Categories
-                </a>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Suppliers" ? "active" : "")"
-                   asp-controller="Suppliers" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                    Suppliers
-                </a>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-section-label">Sales</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Orders" ? "active" : "")"
-                   asp-controller="Orders" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                        <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                    Sales Orders
-                </a>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Customers" ? "active" : "")"
-                   asp-controller="Customers" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
-                    Customers
-                </a>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-section-label">Inventory</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Inventory" ? "active" : "")"
-                   asp-controller="Inventory" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                    </svg>
-                    Stock & Restock
-                </a>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-section-label">Analytics</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Reports" ? "active" : "")"
-                   asp-controller="Reports" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                    Reports
-                </a>
-            </nav>
-            @if (PermissionService.HasPermission(User, "Users", "View"))
-            {
-                <nav class="nav-section">
-                    <div class="nav-section-label">Administration</div>
-                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Users" ? "active" : "")"
-                       asp-controller="Users" asp-action="Index">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                        User Management
+                <div class="nav-section">
+                    <div class="nav-section-label">Overview</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")"
+                       asp-controller="Dashboard" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                            </svg>
+                        </div>
+                        <span>Dashboard</span>
                     </a>
-                </nav>
-            }
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Catalogue</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Products" ? "active" : "")"
+                       asp-controller="Products" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            </svg>
+                        </div>
+                        <span>Products</span>
+                    </a>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Categories" ? "active" : "")"
+                       asp-controller="Categories" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                        </div>
+                        <span>Categories</span>
+                    </a>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Suppliers" ? "active" : "")"
+                       asp-controller="Suppliers" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <span>Suppliers</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Sales</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Orders" ? "active" : "")"
+                       asp-controller="Orders" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg>
+                        </div>
+                        <span>Sales Orders</span>
+                    </a>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Customers" ? "active" : "")"
+                       asp-controller="Customers" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <span>Customers</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Inventory</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Inventory" ? "active" : "")"
+                       asp-controller="Inventory" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg>
+                        </div>
+                        <span>Stock & Restock</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Analytics</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Reports" ? "active" : "")"
+                       asp-controller="Reports" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10" />
+                                <line x1="12" y1="20" x2="12" y2="4" />
+                                <line x1="6" y1="20" x2="6" y2="14" />
+                            </svg>
+                        </div>
+                        <span>Reports</span>
+                    </a>
+                </div>
+
+                @if (PermissionService.HasPermission(User, "Users", "View"))
+                {
+                    <div class="nav-section">
+                        <div class="nav-section-label">Administration</div>
+                        <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Users" ? "active" : "")"
+                           asp-controller="Users" asp-action="Index">
+                            <div class="nav-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            </div>
+                            <span>User Management</span>
+                        </a>
+                    </div>
+                }
+
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div style="
+                padding: 16px 20px;
+                border-top: 1px solid var(--color-border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;">
+                    <div style="font-size: 10px; color: var(--color-text-faint); font-family: var(--font-mono);">
+                        v2.0.0
+                    </div>
+                    <div style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 5px;
+                        background: var(--color-accent-dim);
+                        color: var(--color-accent);
+                        padding: 3px 8px;
+                        border-radius: 20px;
+                        font-size: 10px;
+                        font-weight: 700;
+                        font-family: var(--font-heading);
+                        letter-spacing: 0.5px;">
+                        <div style="width: 6px; height: 6px; background: var(--color-accent);
+                                    border-radius: 50%; animation: pulse 2s infinite;"></div>
+                         LIVE
+                    </div>
+            </div>
         </aside>
 
         <!-- Main Area -->
