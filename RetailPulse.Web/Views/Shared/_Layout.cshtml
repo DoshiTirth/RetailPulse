@@ -202,23 +202,90 @@
 
         <!-- Main Area -->
         <div class="main-area">
-            <header class="topbar">
-                <span class="topbar-title">@ViewData["Title"]</span>
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <span class="topbar-meta">@DateTime.Now.ToString("dddd, MMMM d yyyy")</span>
+            <header class="topbar" style="justify-content: space-between;">
+                <!-- Left: Title + Breadcrumb -->
+                <div style="display: flex; flex-direction: column; justify-content: center; min-width: 200px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 11px; color: var(--color-text-faint);
+                         font-family: var(--font-mono);">RetailPulse</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             style="color: var(--color-text-faint);">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                        <span style="font-size: 11px; color: var(--color-text-secondary);
+                         font-family: var(--font-mono);">@ViewData["Title"]</span>
+                    </div>
+                    <span class="topbar-title">@ViewData["Title"]</span>
+                </div>
+
+                <!-- Center: Global Search -->
+                <div style="flex: 1; max-width: 360px; margin: 0 16px;">
+                    <div style="position: relative;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             style="position: absolute; left: 12px; top: 50%;
+                        transform: translateY(-50%);
+                        color: var(--color-text-faint); pointer-events: none;">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="globalSearch"
+                               placeholder="Search products, orders, customers..."
+                               autocomplete="off"
+                               style="width: 100%; background: var(--color-secondary);
+                          border: 1px solid var(--color-border);
+                          border-radius: var(--radius-xl);
+                          padding: 8px 14px 8px 36px;
+                          font-size: 13px; color: var(--color-text-primary);
+                          font-family: var(--font-body);
+                          transition: border-color var(--transition-fast),
+                                      box-shadow var(--transition-fast);
+                          outline: none;"
+                               onfocus="this.style.borderColor='var(--color-accent)';
+                            this.style.boxShadow='0 0 0 3px var(--color-accent-dim)'"
+                               onblur="this.style.borderColor='var(--color-border)';
+                           this.style.boxShadow='none'" />
+
+                        <!-- Search Results Dropdown -->
+                        <div id="searchResults" style="
+                            display: none;
+                            position: absolute;
+                            top: calc(100% + 8px);
+                            left: 0; right: 0;
+                            background: var(--color-primary);
+                            border: 1px solid var(--color-border);
+                            border-radius: var(--radius-lg);
+                            box-shadow: var(--shadow-lg);
+                            z-index: 1000;
+                            max-height: 360px;
+                            overflow-y: auto;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Controls + User -->
+                <div style="display: flex; align-items: center; gap: 12px; min-width: 200px; justify-content: flex-end;">
+
+                    <!-- Date -->
+                    <span class="topbar-meta">@DateTime.Now.ToString("MMM d, yyyy")</span>
 
                     <!-- Dark/Light Toggle -->
                     <button id="theme-toggle" aria-label="Switch to light mode"
-                            style="background: var(--bg-surface2); border: 1px solid var(--border);
-                       border-radius: 20px; padding: 6px 12px; cursor: pointer;
+                            style="background: var(--color-secondary);
+                       border: 1px solid var(--color-border);
+                       border-radius: var(--radius-xl);
+                       padding: 6px 12px; cursor: pointer;
                        display: flex; align-items: center; gap: 7px;
-                       color: var(--text-secondary); font-size: 12px; font-weight: 600;
-                       transition: background 0.2s, color 0.2s;">
-                        <svg id="icon-dark" width="14" height="14" viewBox="0 0 24 24"
+                       color: var(--color-text-secondary); font-size: 12px;
+                       font-weight: 600; font-family: var(--font-body);
+                       transition: background var(--transition-fast),
+                                   color var(--transition-fast);">
+                        <svg id="icon-dark" width="13" height="13" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                         </svg>
-                        <svg id="icon-light" width="14" height="14" viewBox="0 0 24 24"
+                        <svg id="icon-light" width="13" height="13" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2"
                              style="display:none;">
                             <circle cx="12" cy="12" r="5" />
@@ -234,40 +301,60 @@
                         <span id="toggle-label">Light</span>
                     </button>
 
-                    <!-- User Info + Logout -->
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         var roleName = RetailPulse.Web.Services.PermissionService.GetRoleName(User);
                         var username = RetailPulse.Web.Services.PermissionService.GetUsername(User);
 
+                        <!-- User Info -->
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <div style="text-align: right;">
-                                <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                                <div style="font-size: 13px; font-weight: 600;
+                                    color: var(--color-text-primary);
+                                    font-family: var(--font-heading);">
                                     @username
                                 </div>
-                                <div style="font-size: 10px; color: var(--accent); font-family: var(--font-mono);
+                                <div style="font-size: 10px; color: var(--color-accent);
+                                    font-family: var(--font-mono);
                                     text-transform: uppercase; letter-spacing: 0.5px;">
                                     @roleName
                                 </div>
                             </div>
 
-                            <div style="width: 34px; height: 34px; background: var(--accent-dim);
-                                border: 1px solid var(--accent); border-radius: 50%;
+                            <!-- Avatar -->
+                            <div style="width: 34px; height: 34px;
+                                background: var(--color-accent-dim);
+                                border: 2px solid var(--color-accent);
+                                border-radius: 50%;
                                 display: flex; align-items: center; justify-content: center;
-                                font-size: 13px; font-weight: 700; color: var(--accent);">
+                                font-size: 13px; font-weight: 700;
+                                color: var(--color-accent);
+                                font-family: var(--font-heading);">
                                 @username.Substring(0, 1).ToUpper()
                             </div>
 
-                            <form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline;">
+                            <!-- Sign Out -->
+                            <form asp-controller="Auth" asp-action="Logout"
+                                  method="post" style="display:inline;">
                                 @Html.AntiForgeryToken()
-                                <button type="submit"
-                                        style="background: transparent; border: 1px solid var(--border);
-                                       border-radius: var(--radius-sm); padding: 6px 12px;
-                                       color: var(--text-secondary); font-size: 12px;
-                                       font-weight: 600; cursor: pointer; font-family: var(--font-main);
-                                       transition: background 0.15s, color 0.15s;"
-                                        onmouseover="this.style.background='var(--red-dim)'; this.style.color='var(--red)'; this.style.borderColor='var(--red)'"
-                                        onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'; this.style.borderColor='var(--border)'">
+                                <button type="submit" style="
+                                    background: transparent;
+                                    border: 1px solid var(--color-border);
+                                    border-radius: var(--radius-md);
+                                    padding: 7px 13px;
+                                    color: var(--color-text-secondary);
+                                    font-size: 12px; font-weight: 600;
+                                    cursor: pointer;
+                                    font-family: var(--font-body);
+                                    transition: background var(--transition-fast),
+                                                color var(--transition-fast),
+                                                border-color var(--transition-fast);"
+                                    onmouseover="this.style.background='var(--color-red-dim)';
+                                                 this.style.color='var(--color-red)';
+                                                 this.style.borderColor='var(--color-red)'"
+                                    onmouseout="this.style.background='transparent';
+                                                this.style.color='var(--color-text-secondary)';
+                                        xz      this.style.borderColor='var(--color-border)'">
                                     Sign Out
                                 </button>
                             </form>

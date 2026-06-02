@@ -62,7 +62,7 @@
     --transition-slow: 350ms ease;
     /* Layout */
     --sidebar-width: 256px;
-    --topbar-height: 60px;
+    --topbar-height: 64px;
 }
 
 /* Light Mode */
@@ -267,6 +267,17 @@ a {
     color: var(--color-text-faint);
     font-family: var(--font-mono);
 }
+
+/* ─── Topbar Responsive Fix ──────────────────────────────── */
+.topbar-meta {
+    display: none;
+}
+
+@media (min-width: 1280px) {
+    .topbar-meta {
+        display: block;
+    }
+}   
 
 /* Page Content */
 .page-content {
@@ -805,3 +816,4 @@ textarea {
     width: 15px;
     height: 15px;
 }
+
