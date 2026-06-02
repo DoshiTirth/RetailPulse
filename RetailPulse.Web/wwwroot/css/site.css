@@ -76,16 +76,72 @@ body.light-mode {
     --color-text-secondary: #475569;
     --color-text-muted: #64748B;
     --color-text-faint: #94A3B8;
+    --color-accent-dim: rgba(34, 197, 94, 0.1);
+    --color-green-dim: rgba(34, 197, 94, 0.1);
+    --color-red-dim: rgba(239, 68, 68, 0.1);
+    --color-yellow-dim: rgba(245, 158, 11, 0.1);
+    --color-blue-dim: rgba(59, 130, 246, 0.1);
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 0 0 0.5px var(--color-border);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.1), 0 0 0 0.5px var(--color-border);
     --shadow-lg: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 0.5px var(--color-border);
+    --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.1);
 }
 
-/* Reset */
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* Light mode specific overrides */
+body.light-mode .sidebar {
+    background: #FFFFFF;
+    border-right-color: #CBD5E1;
+}
+
+body.light-mode .topbar {
+    background: #FFFFFF;
+    border-bottom-color: #CBD5E1;
+}
+
+body.light-mode .card,
+body.light-mode .kpi-card,
+body.light-mode .table-container {
+    background: #FFFFFF;
+    border-color: #CBD5E1;
+}
+
+body.light-mode tbody tr:hover {
+    background: #F8FAFC;
+}
+
+body.light-mode input,
+body.light-mode select,
+body.light-mode textarea {
+    background: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+body.light-mode .nav-item:hover {
+    background: #F1F5F9;
+}
+
+body.light-mode .nav-item.active {
+    background: rgba(34, 197, 94, 0.08);
+}
+
+body.light-mode #globalSearch {
+    background: #F1F5F9;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+body.light-mode .table-toolbar {
+    background: #FFFFFF;
+    border-bottom-color: #CBD5E1;
+}
+
+body.light-mode tbody tr {
+    border-bottom-color: #E2E8F0;
+}
+
+body.light-mode thead th {
+    border-bottom-color: #CBD5E1;
 }
 
 html {
