@@ -1,5 +1,19 @@
 ﻿@model RetailPulse.Web.Models.ViewModels.ReportsViewModel
 
+<div class="page-header" style="margin-bottom: 24px;">
+    <div>
+        <div class="page-header-meta">
+            <span>Analytics</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+            <span>Reports</span>
+        </div>
+        <h1>Reports & Analytics</h1>
+        <p>Business insights and downloadable reports</p>
+    </div>
+</div>
+
 <!-- Charts Row -->
 <div class="grid-2" style="margin-bottom: 24px;">
     <div class="card animate-in">
@@ -28,34 +42,61 @@
 <div class="card animate-in">
     <div class="card-header">
         <span class="card-title">Generate Report</span>
+        <span style="font-size: 11px; color: var(--color-text-faint);
+                     font-family: var(--font-mono);">
+            Select a report type to preview and download
+        </span>
     </div>
 
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="revenue" />
-            <button type="submit" class="btn @(Model.SelectedReport == "revenue" ? "btn-primary" : "btn-ghost")">
+            <button type="submit" class="btn @(Model.SelectedReport == "revenue" ? "btn-primary" : "btn-ghost")"
+                    style="gap: 8px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
                 Monthly Revenue
             </button>
         </form>
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="products" />
-            <button type="submit" class="btn @(Model.SelectedReport == "products" ? "btn-primary" : "btn-ghost")">
+            <button type="submit" class="btn @(Model.SelectedReport == "products" ? "btn-primary" : "btn-ghost")"
+                    style="gap: 8px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
                 Top Products
             </button>
         </form>
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="category" />
-            <button type="submit" class="btn @(Model.SelectedReport == "category" ? "btn-primary" : "btn-ghost")">
+            <button type="submit" class="btn @(Model.SelectedReport == "category" ? "btn-primary" : "btn-ghost")"
+                    style="gap: 8px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                </svg>
                 Sales by Category
             </button>
         </form>
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="lowstock" />
-            <button type="submit" class="btn @(Model.SelectedReport == "lowstock" ? "btn-primary" : "btn-ghost")">
+            <button type="submit" class="btn @(Model.SelectedReport == "lowstock" ? "btn-primary" : "btn-ghost")"
+                    style="gap: 8px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                </svg>
                 Low Stock
             </button>
         </form>
@@ -63,33 +104,53 @@
 
     @if (Model.SelectedReport != null)
     {
-        <!-- Preview Table -->
-        <div style="background: var(--bg-surface2); border-radius: var(--radius-md);
-                    padding: 20px; margin-bottom: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
-                    Preview —
-                    @(Model.SelectedReport switch {
-                        "revenue"  => "Monthly Revenue",
-                        "products" => "Top Products",
-                        "category" => "Sales by Category",
-                        "lowstock" => "Low Stock",
-                        _          => ""
-                    })
-                </span>
-                <div style="display: flex; gap: 10px;">
+        <div style="background: var(--color-secondary);
+                    border-radius: var(--radius-md);
+                    border: 1px solid var(--color-border);
+                    overflow: hidden; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between;
+                        align-items: center; padding: 14px 20px;
+                        border-bottom: 1px solid var(--color-border);">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; background: var(--color-accent);
+                                border-radius: 50%;"></div>
+                    <span style="font-size: 13px; font-weight: 600;
+                                 color: var(--color-text-primary);
+                                 font-family: var(--font-heading);">
+                        Preview —
+                        @(Model.SelectedReport switch {
+                            "revenue"  => "Monthly Revenue",
+                            "products" => "Top Products",
+                            "category" => "Sales by Category",
+                            "lowstock" => "Low Stock",
+                            _          => ""
+                        })
+                    </span>
+                </div>
+                <div style="display: flex; gap: 8px;">
                     <a asp-action="DownloadCsv" asp-route-reportType="@Model.SelectedReport"
-                       class="btn btn-ghost" style="font-size: 12px;">
-                        Download CSV
+                       class="btn btn-ghost" style="font-size: 12px; padding: 6px 14px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        CSV
                     </a>
                     <a asp-action="DownloadPdf" asp-route-reportType="@Model.SelectedReport"
-                       class="btn btn-primary" style="font-size: 12px;">
-                        Download PDF
+                       class="btn btn-primary" style="font-size: 12px; padding: 6px 14px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        PDF
                     </a>
                 </div>
             </div>
 
-            <div class="table-wrap">
+            <div class="table-scroll" style="padding: 0 4px;">
                 <table>
                     @if (Model.SelectedReport == "revenue")
                     {
@@ -102,12 +163,14 @@
                                 <tr>
                                     <td>@r.Label</td>
                                     <td style="font-family: var(--font-mono);">@r.Orders</td>
-                                    <td style="font-family: var(--font-mono);">$@r.Revenue.ToString("N2")</td>
+                                    <td style="font-family: var(--font-mono);
+                                               font-weight: 600;">$@r.Revenue.ToString("N2")</td>
                                 </tr>
                             }
-                            <tr style="border-top: 2px solid var(--accent);">
+                            <tr style="border-top: 2px solid var(--color-accent);">
                                 <td colspan="2" style="font-weight: 700;">Total</td>
-                                <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent);">
+                                <td style="font-family: var(--font-mono); font-weight: 700;
+                                           color: var(--color-accent);">
                                     $@Model.TotalRevenue.ToString("N2")
                                 </td>
                             </tr>
@@ -124,7 +187,8 @@
                                 <tr>
                                     <td style="font-weight: 600;">@p.ProductName</td>
                                     <td style="font-family: var(--font-mono);">@p.UnitsSold</td>
-                                    <td style="font-family: var(--font-mono);">$@p.Revenue.ToString("N2")</td>
+                                    <td style="font-family: var(--font-mono);
+                                               font-weight: 600;">$@p.Revenue.ToString("N2")</td>
                                 </tr>
                             }
                         </tbody>
@@ -140,7 +204,8 @@
                                 <tr>
                                     <td style="font-weight: 600;">@c.CategoryName</td>
                                     <td style="font-family: var(--font-mono);">@c.Orders</td>
-                                    <td style="font-family: var(--font-mono);">$@c.Revenue.ToString("N2")</td>
+                                    <td style="font-family: var(--font-mono);
+                                               font-weight: 600;">$@c.Revenue.ToString("N2")</td>
                                 </tr>
                             }
                         </tbody>
@@ -148,7 +213,13 @@
                     else if (Model.SelectedReport == "lowstock")
                     {
                         <thead>
-                            <tr><th>Product</th><th>Category</th><th>Supplier</th><th>Stock</th><th>Reorder At</th></tr>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Supplier</th>
+                                <th>Stock</th>
+                                <th>Reorder At</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @foreach (var p in Model.LowStock)
@@ -156,9 +227,16 @@
                                 <tr>
                                     <td style="font-weight: 600;">@p.Name</td>
                                     <td>@p.Category.Name</td>
-                                    <td style="color: var(--text-secondary);">@p.Supplier.Name</td>
-                                    <td style="font-family: var(--font-mono); color: var(--red);">@p.StockQuantity</td>
-                                    <td style="font-family: var(--font-mono);">@p.ReorderLevel</td>
+                                    <td style="color: var(--color-text-secondary);">
+                                        @p.Supplier.Name
+                                    </td>
+                                    <td style="font-family: var(--font-mono);
+                                               color: var(--color-red); font-weight: 700;">
+                                        @p.StockQuantity
+                                    </td>
+                                    <td style="font-family: var(--font-mono);">
+                                        @p.ReorderLevel
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -169,13 +247,13 @@
     }
     else
     {
-        <div style="text-align: center; padding: 32px; color: var(--text-faint);">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.4;">
-                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
                 <line x1="6" y1="20" x2="6" y2="14"/>
             </svg>
-            <div style="font-size: 13px;">Select a report type above to preview and download</div>
+            <p>Select a report type above to preview and download</p>
         </div>
     }
 </div>
