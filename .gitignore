@@ -33,3 +33,6 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# ─── UI UX Pro Max Skill ──────────────────────────────────
+.claude/
