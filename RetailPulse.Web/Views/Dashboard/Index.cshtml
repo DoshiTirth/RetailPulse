@@ -3,40 +3,125 @@
 <!-- KPI Cards -->
 <div class="kpi-grid">
     <div class="kpi-card animate-in">
-        <div class="kpi-label">Total Revenue</div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+            <div class="kpi-label">Total Revenue</div>
+            <div style="width: 36px; height: 36px; background: var(--color-accent-dim);
+                        border-radius: var(--radius-md);
+                        display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--color-accent)" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+            </div>
+        </div>
         <div class="kpi-value" data-target="@Model.TotalRevenue" data-prefix="$" data-decimal="true">$0</div>
-        <div class="kpi-sub">all completed orders</div>
-        <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+            <span class="kpi-sub">all completed orders</span>
+        </div>
+        <div class="kpi-accent-bar" style="background: var(--color-accent);"></div>
     </div>
+
     <div class="kpi-card animate-in">
-        <div class="kpi-label">Revenue (30 days)</div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+            <div class="kpi-label">Revenue (30 days)</div>
+            <div style="width: 36px; height: 36px; background: var(--color-blue-dim);
+                        border-radius: var(--radius-md);
+                        display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--color-blue)" stroke-width="2">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                    <polyline points="17 6 23 6 23 12" />
+                </svg>
+            </div>
+        </div>
         <div class="kpi-value" data-target="@Model.RecentRevenue" data-prefix="$" data-decimal="true">$0</div>
-        <div class="kpi-sub">last 30 days</div>
-        <div class="kpi-accent-bar" style="background: var(--green);"></div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+            <span class="kpi-sub">last 30 days</span>
+        </div>
+        <div class="kpi-accent-bar" style="background: var(--color-blue);"></div>
     </div>
+
     <div class="kpi-card animate-in">
-        <div class="kpi-label">Pending Orders</div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+            <div class="kpi-label">Pending Orders</div>
+            <div style="width: 36px; height: 36px; background: var(--color-yellow-dim);
+                        border-radius: var(--radius-md);
+                        display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--color-yellow)" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+            </div>
+        </div>
         <div class="kpi-value" data-target="@Model.PendingOrders">0</div>
-        <div class="kpi-sub">awaiting processing</div>
-        <div class="kpi-accent-bar" style="background: var(--yellow);"></div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+            <span class="kpi-sub">awaiting processing</span>
+        </div>
+        <div class="kpi-accent-bar" style="background: var(--color-yellow);"></div>
     </div>
+
     <div class="kpi-card animate-in">
-        <div class="kpi-label">Low Stock Alerts</div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+            <div class="kpi-label">Low Stock Alerts</div>
+            <div style="width: 36px; height: 36px; background: var(--color-red-dim);
+                        border-radius: var(--radius-md);
+                        display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--color-red)" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+            </div>
+        </div>
         <div class="kpi-value" data-target="@Model.LowStockCount">0</div>
-        <div class="kpi-sub">products below reorder level</div>
-        <div class="kpi-accent-bar" style="background: var(--red);"></div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+            <span class="kpi-sub">below reorder level</span>
+        </div>
+        <div class="kpi-accent-bar" style="background: var(--color-red);"></div>
     </div>
+
     <div class="kpi-card animate-in">
-        <div class="kpi-label">Active Products</div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+            <div class="kpi-label">Active Products</div>
+            <div style="width: 36px; height: 36px; background: var(--color-accent-dim);
+                        border-radius: var(--radius-md);
+                        display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--color-accent)" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                </svg>
+            </div>
+        </div>
         <div class="kpi-value" data-target="@Model.TotalProducts">0</div>
-        <div class="kpi-sub">in catalogue</div>
-        <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+            <span class="kpi-sub">in catalogue</span>
+        </div>
+        <div class="kpi-accent-bar" style="background: var(--color-accent);"></div>
     </div>
+
     <div class="kpi-card animate-in">
-        <div class="kpi-label">Customers</div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+            <div class="kpi-label">Customers</div>
+            <div style="width: 36px; height: 36px; background: var(--color-blue-dim);
+                        border-radius: var(--radius-md);
+                        display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--color-blue)" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+            </div>
+        </div>
         <div class="kpi-value" data-target="@Model.TotalCustomers">0</div>
-        <div class="kpi-sub">registered customers</div>
-        <div class="kpi-accent-bar" style="background: var(--green);"></div>
+        <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+            <span class="kpi-sub">registered customers</span>
+        </div>
+        <div class="kpi-accent-bar" style="background: var(--color-blue);"></div>
     </div>
 </div>
 
