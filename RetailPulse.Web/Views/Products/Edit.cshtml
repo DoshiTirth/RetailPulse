@@ -2,10 +2,24 @@
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>Products</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Edit Product</span>
+        </div>
         <h1>Edit Product</h1>
         <p>Update product details</p>
     </div>
-    <a asp-action="Index" class="btn btn-ghost">Back to Products</a>
+    <a asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back
+    </a>
 </div>
 
 <div class="card animate-in" style="max-width: 680px;">
@@ -13,6 +27,8 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="ProductId" value="@Model.ProductId" />
         <input type="hidden" name="CreatedAt" value="@Model.CreatedAt.ToString("o")" />
+
+        <div class="section-divider"><span>Basic Info</span></div>
 
         <div class="grid-2">
             <div class="form-group">
@@ -29,7 +45,6 @@
             <div class="form-group">
                 <label>Category</label>
                 <select name="CategoryId" required>
-                    <option value="">-- Select Category --</option>
                     @foreach (SelectListItem item in ViewBag.Categories)
                     {
                         if (item.Selected)
@@ -46,7 +61,6 @@
             <div class="form-group">
                 <label>Supplier</label>
                 <select name="SupplierId" required>
-                    <option value="">-- Select Supplier --</option>
                     @foreach (SelectListItem item in ViewBag.Suppliers)
                     {
                         if (item.Selected)
@@ -62,39 +76,50 @@
             </div>
         </div>
 
-        <div class="grid-2">
+        <div class="section-divider"><span>Pricing & Stock</span></div>
+
+        <div class="grid-3">
             <div class="form-group">
                 <label>Unit Price ($)</label>
-                <input type="number" name="UnitPrice" value="@Model.UnitPrice" step="0.01" min="0" required />
+                <input type="number" name="UnitPrice" value="@Model.UnitPrice"
+                       step="0.01" min="0" required />
             </div>
             <div class="form-group">
                 <label>Stock Quantity</label>
-                <input type="number" name="StockQuantity" value="@Model.StockQuantity" min="0" required />
+                <input type="number" name="StockQuantity"
+                       value="@Model.StockQuantity" min="0" required />
+            </div>
+            <div class="form-group">
+                <label>Reorder Level</label>
+                <input type="number" name="ReorderLevel"
+                       value="@Model.ReorderLevel" min="0" required />
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Reorder Level</label>
-                <input type="number" name="ReorderLevel" value="@Model.ReorderLevel" min="0" required />
-            </div>
-            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px;">
-                <label style="display: flex; align-items: center; gap: 8px;
-                              text-transform: none; font-size: 13px; cursor: pointer;">
-                    <input type="checkbox" name="IsActive" value="true"
-                           @(Model.IsActive ? "checked" : "")
-                           style="width: auto; accent-color: var(--accent);" />
-                    Active Product
-                </label>
-                @if (Model.IsActive)
-                {
-                    <input type="hidden" name="IsActive" value="false" />
-                }
-            </div>
+        <div class="section-divider"><span>Status</span></div>
+
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 10px;
+                          text-transform: none; font-size: 13px; cursor: pointer;
+                          font-weight: 500;">
+                <input type="checkbox" name="IsActive" value="true"
+                       @(Model.IsActive ? "checked" : "")
+                       style="width: 16px; height: 16px;
+                              accent-color: var(--color-accent);" />
+                Active Product — visible in catalogue and available for orders
+            </label>
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 8px;">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Save Changes
+            </button>
             <a asp-action="Index" class="btn btn-ghost">Cancel</a>
         </div>
     </form>
