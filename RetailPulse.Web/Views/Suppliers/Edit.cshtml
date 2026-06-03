@@ -2,10 +2,24 @@
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>Suppliers</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Edit Supplier</span>
+        </div>
         <h1>Edit Supplier</h1>
         <p>Update supplier details</p>
     </div>
-    <a asp-action="Index" class="btn btn-ghost">Back to Suppliers</a>
+    <a asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back
+    </a>
 </div>
 
 <div class="card animate-in" style="max-width: 680px;">
@@ -14,44 +28,60 @@
         <input type="hidden" asp-for="SupplierId" />
         <input type="hidden" asp-for="CreatedAt" />
 
+        <div class="section-divider"><span>Company Info</span></div>
+
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="Name">Company Name</label>
-                <input asp-for="Name" />
-                <span asp-validation-for="Name" class="field-validation-error"></span>
+                <label>Company Name</label>
+                <input type="text" asp-for="Name" required />
             </div>
             <div class="form-group">
-                <label asp-for="ContactName">Contact Person</label>
-                <input asp-for="ContactName" />
+                <label>Contact Person</label>
+                <input type="text" asp-for="ContactName" />
+            </div>
+        </div>
+
+        <div class="section-divider"><span>Contact Details</span></div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" asp-for="Email" />
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" asp-for="Phone" />
             </div>
         </div>
 
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="Email">Email</label>
-                <input asp-for="Email" type="email" />
+                <label>Country</label>
+                <input type="text" asp-for="Country" />
             </div>
-            <div class="form-group">
-                <label asp-for="Phone">Phone</label>
-                <input asp-for="Phone" />
-            </div>
-        </div>
-
-        <div class="grid-2">
-            <div class="form-group">
-                <label asp-for="Country">Country</label>
-                <input asp-for="Country" />
-            </div>
-            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px;">
-                <label style="display: flex; align-items: center; gap: 8px; text-transform: none; font-size: 13px; cursor: pointer;">
-                    <input asp-for="IsActive" type="checkbox" style="width: auto; accent-color: var(--accent);" />
+            <div class="form-group" style="display: flex; align-items: flex-end;
+                                           padding-bottom: 4px;">
+                <label style="display: flex; align-items: center; gap: 10px;
+                              text-transform: none; font-size: 13px;
+                              cursor: pointer; font-weight: 500;">
+                    <input type="checkbox" asp-for="IsActive"
+                           style="width: 16px; height: 16px;
+                                  accent-color: var(--color-accent);" />
                     Active Supplier
                 </label>
             </div>
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 8px;">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Save Changes
+            </button>
             <a asp-action="Index" class="btn btn-ghost">Cancel</a>
         </div>
     </form>

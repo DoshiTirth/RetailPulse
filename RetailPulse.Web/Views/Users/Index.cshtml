@@ -2,13 +2,21 @@
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>Administration</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>User Management</span>
+        </div>
         <h1>User Management</h1>
         <p>Manage system users and their roles</p>
     </div>
     @if (PermissionService.HasPermission(User, "Users", "Add"))
     {
         <a asp-action="Create" class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
@@ -19,11 +27,26 @@
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">@TempData["Success"]</div>
+    <div class="alert alert-success">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        @TempData["Success"]
+    </div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        @TempData["Error"]
+    </div>
 }
 
 <!-- Role Summary Cards -->
@@ -31,16 +54,31 @@
     @foreach (var role in Model.GroupBy(u => u.Role.Name))
     {
         <div class="kpi-card animate-in">
-            <div class="kpi-label">@role.Key</div>
+            <div style="display: flex; align-items: flex-start;
+                            justify-content: space-between; margin-bottom: 12px;">
+                <div class="kpi-label">@role.Key</div>
+                <div style="width: 36px; height: 36px; background: var(--color-accent-dim);
+                                border-radius: var(--radius-md);
+                                display: flex; align-items: center; justify-content: center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="var(--color-accent)" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </div>
+            </div>
             <div class="kpi-value">@role.Count()</div>
             <div class="kpi-sub">@role.Count(u => u.IsActive) active</div>
-            <div class="kpi-accent-bar" style="background: var(--accent);"></div>
+            <div class="kpi-accent-bar" style="background: var(--color-accent);"></div>
         </div>
     }
 </div>
 
-<div class="card animate-in">
-    <div class="table-wrap">
+<div class="table-container animate-in">
+    <div class="table-toolbar">
+        <span class="table-count">@Model.Count() users</span>
+    </div>
+    <div class="table-scroll">
         <table>
             <thead>
                 <tr>
@@ -59,16 +97,24 @@
                     <tr>
                         <td>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="width: 30px; height: 30px; background: var(--accent-dim);
-                                                border: 1px solid var(--accent); border-radius: 50%;
-                                                display: flex; align-items: center; justify-content: center;
-                                                font-size: 12px; font-weight: 700; color: var(--accent);">
+                                <div style="width: 32px; height: 32px;
+                                                background: var(--color-accent-dim);
+                                                border: 1px solid rgba(34,197,94,0.2);
+                                                border-radius: 50%;
+                                                display: flex; align-items: center;
+                                                justify-content: center;
+                                                font-size: 12px; font-weight: 700;
+                                                color: var(--color-accent);
+                                                font-family: var(--font-heading);
+                                                flex-shrink: 0;">
                                     @u.Username.Substring(0, 1).ToUpper()
                                 </div>
                                 <span style="font-weight: 600;">@u.Username</span>
                             </div>
                         </td>
-                        <td style="color: var(--text-secondary);">@u.Email</td>
+                        <td style="color: var(--color-text-secondary); font-size: 12px;">
+                            @u.Email
+                        </td>
                         <td>
                             @{
                                 var badgeColor = u.Role.Name switch
@@ -80,30 +126,41 @@
                                     _ => "badge-blue"
                                 };
                             }
-                            <span class="badge @badgeColor">@u.Role.Name</span>
-                        </td>
-                        <td style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);">
-                            @(u.LastLoginAt.HasValue? u.LastLoginAt.Value.ToString("MMM d, yyyy h:mm tt") : "Never")
-                        </td>
-                        <td style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);">
-                            @u.CreatedAt.ToString("MMM d, yyyy")
-                        </td>
-                        <td>
-                            @if (u.IsActive)
+                        <span class="badge @badgeColor">@u.Role.Name</span>
+                    </td>
+                    <td style="font-family: var(--font-mono); font-size: 12px;
+                                   color: var(--color-text-faint);">
+                        @(u.LastLoginAt.HasValue
+                                                ? u.LastLoginAt.Value.ToString("MMM d, yyyy h:mm tt")
+                                                : "Never")
+                    </td>
+                    <td style="font-family: var(--font-mono); font-size: 12px;
+                                   color: var(--color-text-faint);">
+                        @u.CreatedAt.ToString("MMM d, yyyy")
+                    </td>
+                    <td>
+                        @if (u.IsActive)
                             {
-                                <span class="badge badge-green">Active</span>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="status-dot green"></span>
+                                    <span class="badge badge-green">Active</span>
+                                </div>
                             }
                             else
                             {
-                                <span class="badge badge-red">Inactive</span>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="status-dot red"></span>
+                                    <span class="badge badge-red">Inactive</span>
+                                </div>
                             }
                         </td>
                         <td>
-                            <div style="display: flex; gap: 8px;">
+                            <div class="btn-group">
                                 @if (PermissionService.HasPermission(User, "Users", "Edit"))
                                 {
                                     <a asp-action="Edit" asp-route-id="@u.UserId"
-                                       class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                       class="btn btn-ghost"
+                                       style="padding: 5px 10px; font-size: 12px;">Edit</a>
                                 }
                                 @if (PermissionService.HasPermission(User, "Users", "Deactivate"))
                                 {

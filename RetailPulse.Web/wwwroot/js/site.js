@@ -40,7 +40,7 @@
 
 });
 
-// ─── Dark / Light Mode Toggle ─────────────────────────
+// Dark / Light Mode Toggle
 const themeToggle = document.getElementById('theme-toggle');
 const iconDark = document.getElementById('icon-dark');
 const iconLight = document.getElementById('icon-light');
@@ -144,7 +144,7 @@ function showConfirm({ title, message, confirmText = 'Confirm', danger = false, 
     backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
 }
 
-// ─── Wire up all confirmation forms ──────────────────
+// Wire up all confirmation forms
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('form[data-confirm]').forEach(form => {
         form.addEventListener('submit', e => {
@@ -161,3 +161,88 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Global Search 
+const globalSearch = document.getElementById('globalSearch');
+const searchResults = document.getElementById('searchResults');
+
+if (globalSearch) {
+    let searchTimeout;
+
+    globalSearch.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        const query = globalSearch.value.trim();
+
+        if (query.length < 2) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        searchTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`/Search?q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    searchResults.innerHTML = `
+                        <div style="padding: 16px; text-align: center;
+                                    color: var(--color-text-faint); font-size: 13px;">
+                            No results for "${query}"
+                        </div>`;
+                } else {
+                    searchResults.innerHTML = data.map(item => `
+                        <a href="${item.url}" style="
+                            display: flex; align-items: center; gap: 12px;
+                            padding: 10px 16px;
+                            color: var(--color-text-primary);
+                            text-decoration: none;
+                            transition: background var(--transition-fast);
+                            border-bottom: 1px solid var(--color-border);"
+                           onmouseover="this.style.background='var(--color-secondary)'"
+                           onmouseout="this.style.background='transparent'">
+                            <div style="
+                                width: 28px; height: 28px;
+                                background: var(--color-accent-dim);
+                                border-radius: var(--radius-sm);
+                                display: flex; align-items: center; justify-content: center;
+                                font-size: 10px; font-weight: 700;
+                                color: var(--color-accent);
+                                font-family: var(--font-heading);
+                                flex-shrink: 0;">
+                                ${item.type.substring(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                                <div style="font-size: 13px; font-weight: 600;">
+                                    ${item.name}
+                                </div>
+                                <div style="font-size: 11px;
+                                            color: var(--color-text-faint);
+                                            font-family: var(--font-mono);">
+                                    ${item.type} ${item.meta ? '— ' + item.meta : ''}
+                                </div>
+                            </div>
+                        </a>`).join('');
+                }
+
+                searchResults.style.display = 'block';
+            } catch (e) {
+                console.error('Search error:', e);
+            }
+        }, 300);
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!globalSearch.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    // Keyboard navigation
+    globalSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            searchResults.style.display = 'none';
+            globalSearch.blur();
+        }
+    });
+}

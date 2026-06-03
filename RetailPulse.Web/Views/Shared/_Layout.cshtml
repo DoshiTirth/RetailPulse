@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — RetailPulse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
 </head>
@@ -14,18 +15,20 @@
 
         <!-- Sidebar -->
         <aside class="sidebar">
+            <!-- Logo -->
             <div class="sidebar-logo">
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
                     <div style="
-                        width: 32px; height: 32px;
-                        background: var(--accent);
-                        border-radius: 8px;
-                        display: flex; align-items: center; justify-content: center;
-                        flex-shrink: 0;">
+                width: 36px; height: 36px;
+                background: var(--color-accent);
+                border-radius: 10px;
+                display: flex; align-items: center; justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(34,197,94,0.3);">
                         <svg width="18" height="18" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                             <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-                                  font-family="'Segoe UI', system-ui, sans-serif"
-                                  font-size="14" font-weight="700" fill="white">RP</text>
+                                  font-family="'Rubik', system-ui" font-size="14"
+                                  font-weight="700" fill="white">RP</text>
                         </svg>
                     </div>
                     <div>
@@ -35,136 +38,254 @@
                 </div>
             </div>
 
-            <nav class="nav-section">
-                <div class="nav-section-label">Overview</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")"
-                   asp-controller="Dashboard" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                    </svg>
-                    Dashboard
-                </a>
-            </nav>
+            <!-- Navigation -->
+            <nav style="flex: 1; padding: 12px 0;">
 
-            <nav class="nav-section">
-                <div class="nav-section-label">Catalogue</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Products" ? "active" : "")"
-                   asp-controller="Products" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    </svg>
-                    Products
-                </a>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Categories" ? "active" : "")"
-                   asp-controller="Categories" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="8" y1="6" x2="21" y2="6" />
-                        <line x1="8" y1="12" x2="21" y2="12" />
-                        <line x1="8" y1="18" x2="21" y2="18" />
-                        <line x1="3" y1="6" x2="3.01" y2="6" />
-                        <line x1="3" y1="12" x2="3.01" y2="12" />
-                        <line x1="3" y1="18" x2="3.01" y2="18" />
-                    </svg>
-                    Categories
-                </a>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Suppliers" ? "active" : "")"
-                   asp-controller="Suppliers" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                    Suppliers
-                </a>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-section-label">Sales</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Orders" ? "active" : "")"
-                   asp-controller="Orders" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                        <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                    Sales Orders
-                </a>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Customers" ? "active" : "")"
-                   asp-controller="Customers" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
-                    Customers
-                </a>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-section-label">Inventory</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Inventory" ? "active" : "")"
-                   asp-controller="Inventory" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                    </svg>
-                    Stock & Restock
-                </a>
-            </nav>
-
-            <nav class="nav-section">
-                <div class="nav-section-label">Analytics</div>
-                <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Reports" ? "active" : "")"
-                   asp-controller="Reports" asp-action="Index">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                    Reports
-                </a>
-            </nav>
-            @if (PermissionService.HasPermission(User, "Users", "View"))
-            {
-                <nav class="nav-section">
-                    <div class="nav-section-label">Administration</div>
-                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Users" ? "active" : "")"
-                       asp-controller="Users" asp-action="Index">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                        User Management
+                <div class="nav-section">
+                    <div class="nav-section-label">Overview</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")"
+                       asp-controller="Dashboard" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                            </svg>
+                        </div>
+                        <span>Dashboard</span>
                     </a>
-                </nav>
-            }
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Catalogue</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Products" ? "active" : "")"
+                       asp-controller="Products" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            </svg>
+                        </div>
+                        <span>Products</span>
+                    </a>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Categories" ? "active" : "")"
+                       asp-controller="Categories" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>
+                        </div>
+                        <span>Categories</span>
+                    </a>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Suppliers" ? "active" : "")"
+                       asp-controller="Suppliers" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <span>Suppliers</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Sales</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Orders" ? "active" : "")"
+                       asp-controller="Orders" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg>
+                        </div>
+                        <span>Sales Orders</span>
+                    </a>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Customers" ? "active" : "")"
+                       asp-controller="Customers" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <span>Customers</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Inventory</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Inventory" ? "active" : "")"
+                       asp-controller="Inventory" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg>
+                        </div>
+                        <span>Stock & Restock</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-label">Analytics</div>
+                    <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Reports" ? "active" : "")"
+                       asp-controller="Reports" asp-action="Index">
+                        <div class="nav-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10" />
+                                <line x1="12" y1="20" x2="12" y2="4" />
+                                <line x1="6" y1="20" x2="6" y2="14" />
+                            </svg>
+                        </div>
+                        <span>Reports</span>
+                    </a>
+                </div>
+
+                @if (PermissionService.HasPermission(User, "Users", "View"))
+                {
+                    <div class="nav-section">
+                        <div class="nav-section-label">Administration</div>
+                        <a class="nav-item @(ViewData["ActivePage"]?.ToString() == "Users" ? "active" : "")"
+                           asp-controller="Users" asp-action="Index">
+                            <div class="nav-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            </div>
+                            <span>User Management</span>
+                        </a>
+                    </div>
+                }
+
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div style="
+                padding: 16px 20px;
+                border-top: 1px solid var(--color-border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;">
+                    <div style="font-size: 10px; color: var(--color-text-faint); font-family: var(--font-mono);">
+                        v2.0.0
+                    </div>
+                    <div style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 5px;
+                        background: var(--color-accent-dim);
+                        color: var(--color-accent);
+                        padding: 3px 8px;
+                        border-radius: 20px;
+                        font-size: 10px;
+                        font-weight: 700;
+                        font-family: var(--font-heading);
+                        letter-spacing: 0.5px;">
+                        <div style="width: 6px; height: 6px; background: var(--color-accent);
+                                    border-radius: 50%; animation: pulse 2s infinite;"></div>
+                         LIVE
+                    </div>
+            </div>
         </aside>
 
         <!-- Main Area -->
         <div class="main-area">
-            <header class="topbar">
-                <span class="topbar-title">@ViewData["Title"]</span>
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <span class="topbar-meta">@DateTime.Now.ToString("dddd, MMMM d yyyy")</span>
+            <header class="topbar" style="justify-content: space-between;">
+                <!-- Left: Title + Breadcrumb -->
+                <div style="display: flex; flex-direction: column; justify-content: center; min-width: 200px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 11px; color: var(--color-text-faint);
+                         font-family: var(--font-mono);">RetailPulse</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             style="color: var(--color-text-faint);">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                        <span style="font-size: 11px; color: var(--color-text-secondary);
+                         font-family: var(--font-mono);">@ViewData["Title"]</span>
+                    </div>
+                    <span class="topbar-title">@ViewData["Title"]</span>
+                </div>
+
+                <!-- Center: Global Search -->
+                <div style="flex: 1; max-width: 360px; margin: 0 16px;">
+                    <div style="position: relative;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2"
+                             style="position: absolute; left: 12px; top: 50%;
+                        transform: translateY(-50%);
+                        color: var(--color-text-faint); pointer-events: none;">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="globalSearch"
+                               placeholder="Search products, orders, customers..."
+                               autocomplete="off"
+                               style="width: 100%; background: var(--color-secondary);
+                          border: 1px solid var(--color-border);
+                          border-radius: var(--radius-xl);
+                          padding: 8px 14px 8px 36px;
+                          font-size: 13px; color: var(--color-text-primary);
+                          font-family: var(--font-body);
+                          transition: border-color var(--transition-fast),
+                                      box-shadow var(--transition-fast);
+                          outline: none;"
+                               onfocus="this.style.borderColor='var(--color-accent)';
+                            this.style.boxShadow='0 0 0 3px var(--color-accent-dim)'"
+                               onblur="this.style.borderColor='var(--color-border)';
+                           this.style.boxShadow='none'" />
+
+                        <!-- Search Results Dropdown -->
+                        <div id="searchResults" style="
+                            display: none;
+                            position: absolute;
+                            top: calc(100% + 8px);
+                            left: 0; right: 0;
+                            background: var(--color-primary);
+                            border: 1px solid var(--color-border);
+                            border-radius: var(--radius-lg);
+                            box-shadow: var(--shadow-lg);
+                            z-index: 1000;
+                            max-height: 360px;
+                            overflow-y: auto;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Controls + User -->
+                <div style="display: flex; align-items: center; gap: 12px; min-width: 200px; justify-content: flex-end;">
+
+                    <!-- Date -->
+                    <span class="topbar-meta">@DateTime.Now.ToString("MMM d, yyyy")</span>
 
                     <!-- Dark/Light Toggle -->
                     <button id="theme-toggle" aria-label="Switch to light mode"
-                            style="background: var(--bg-surface2); border: 1px solid var(--border);
-                       border-radius: 20px; padding: 6px 12px; cursor: pointer;
+                            style="background: var(--color-secondary);
+                       border: 1px solid var(--color-border);
+                       border-radius: var(--radius-xl);
+                       padding: 6px 12px; cursor: pointer;
                        display: flex; align-items: center; gap: 7px;
-                       color: var(--text-secondary); font-size: 12px; font-weight: 600;
-                       transition: background 0.2s, color 0.2s;">
-                        <svg id="icon-dark" width="14" height="14" viewBox="0 0 24 24"
+                       color: var(--color-text-secondary); font-size: 12px;
+                       font-weight: 600; font-family: var(--font-body);
+                       transition: background var(--transition-fast),
+                                   color var(--transition-fast);">
+                        <svg id="icon-dark" width="13" height="13" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                         </svg>
-                        <svg id="icon-light" width="14" height="14" viewBox="0 0 24 24"
+                        <svg id="icon-light" width="13" height="13" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2"
                              style="display:none;">
                             <circle cx="12" cy="12" r="5" />
@@ -180,40 +301,60 @@
                         <span id="toggle-label">Light</span>
                     </button>
 
-                    <!-- User Info + Logout -->
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         var roleName = RetailPulse.Web.Services.PermissionService.GetRoleName(User);
                         var username = RetailPulse.Web.Services.PermissionService.GetUsername(User);
 
+                        <!-- User Info -->
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <div style="text-align: right;">
-                                <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                                <div style="font-size: 13px; font-weight: 600;
+                                    color: var(--color-text-primary);
+                                    font-family: var(--font-heading);">
                                     @username
                                 </div>
-                                <div style="font-size: 10px; color: var(--accent); font-family: var(--font-mono);
+                                <div style="font-size: 10px; color: var(--color-accent);
+                                    font-family: var(--font-mono);
                                     text-transform: uppercase; letter-spacing: 0.5px;">
                                     @roleName
                                 </div>
                             </div>
 
-                            <div style="width: 34px; height: 34px; background: var(--accent-dim);
-                                border: 1px solid var(--accent); border-radius: 50%;
+                            <!-- Avatar -->
+                            <div style="width: 34px; height: 34px;
+                                background: var(--color-accent-dim);
+                                border: 2px solid var(--color-accent);
+                                border-radius: 50%;
                                 display: flex; align-items: center; justify-content: center;
-                                font-size: 13px; font-weight: 700; color: var(--accent);">
+                                font-size: 13px; font-weight: 700;
+                                color: var(--color-accent);
+                                font-family: var(--font-heading);">
                                 @username.Substring(0, 1).ToUpper()
                             </div>
 
-                            <form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline;">
+                            <!-- Sign Out -->
+                            <form asp-controller="Auth" asp-action="Logout"
+                                  method="post" style="display:inline;">
                                 @Html.AntiForgeryToken()
-                                <button type="submit"
-                                        style="background: transparent; border: 1px solid var(--border);
-                                       border-radius: var(--radius-sm); padding: 6px 12px;
-                                       color: var(--text-secondary); font-size: 12px;
-                                       font-weight: 600; cursor: pointer; font-family: var(--font-main);
-                                       transition: background 0.15s, color 0.15s;"
-                                        onmouseover="this.style.background='var(--red-dim)'; this.style.color='var(--red)'; this.style.borderColor='var(--red)'"
-                                        onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'; this.style.borderColor='var(--border)'">
+                                <button type="submit" style="
+                                    background: transparent;
+                                    border: 1px solid var(--color-border);
+                                    border-radius: var(--radius-md);
+                                    padding: 7px 13px;
+                                    color: var(--color-text-secondary);
+                                    font-size: 12px; font-weight: 600;
+                                    cursor: pointer;
+                                    font-family: var(--font-body);
+                                    transition: background var(--transition-fast),
+                                                color var(--transition-fast),
+                                                border-color var(--transition-fast);"
+                                    onmouseover="this.style.background='var(--color-red-dim)';
+                                                 this.style.color='var(--color-red)';
+                                                 this.style.borderColor='var(--color-red)'"
+                                    onmouseout="this.style.background='transparent';
+                                                this.style.color='var(--color-text-secondary)';
+                                        xz      this.style.borderColor='var(--color-border)'">
                                     Sign Out
                                 </button>
                             </form>

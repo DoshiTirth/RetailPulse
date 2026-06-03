@@ -2,13 +2,21 @@
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>Sales</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Orders</span>
+        </div>
         <h1>Sales Orders</h1>
         <p>Track and manage all customer orders</p>
     </div>
     @if (PermissionService.HasPermission(User, "Orders", "Add"))
     {
         <a asp-action="Create" class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
@@ -19,11 +27,21 @@
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">@TempData["Success"]</div>
+    <div class="alert alert-success">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        @TempData["Success"]
+    </div>
 }
 
-<div class="card animate-in">
-    <div class="table-wrap">
+<div class="table-container animate-in">
+    <div class="table-toolbar">
+        <span class="table-count">@Model.Count() orders</span>
+    </div>
+    <div class="table-scroll">
         <table>
             <thead>
                 <tr>
@@ -40,24 +58,41 @@
                 @foreach (var o in Model)
                 {
                     <tr>
-                        <td style="font-family: var(--font-mono); font-weight: 600;">#@o.OrderId</td>
-                        <td>@o.Customer.FullName</td>
-                        <td style="color: var(--text-secondary); font-size: 12px; font-family: var(--font-mono);">
+                        <td>
+                            <span style="font-family: var(--font-mono); font-weight: 700;
+                                             color: var(--color-accent);">#@o.OrderId</span>
+                        </td>
+                        <td style="font-weight: 500;">@o.Customer.FullName</td>
+                        <td style="color: var(--color-text-faint);
+                                       font-family: var(--font-mono); font-size: 12px;">
                             @o.OrderDate.ToString("MMM d, yyyy")
                         </td>
-                        <td><span class="badge badge-blue">@o.Items.Count items</span></td>
-                        <td style="font-family: var(--font-mono);">$@o.TotalAmount.ToString("N2")</td>
+                        <td>
+                            <span class="badge badge-blue">@o.Items.Count items</span>
+                        </td>
+                        <td style="font-family: var(--font-mono); font-weight: 600;">
+                            $@o.TotalAmount.ToString("N2")
+                        </td>
                         <td>
                             @switch (o.Status)
                             {
                                 case "Completed":
-                                    <span class="badge badge-green">Completed</span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span class="status-dot green"></span>
+                                        <span class="badge badge-green">Completed</span>
+                                    </div>
                                     break;
                                 case "Pending":
-                                    <span class="badge badge-yellow">Pending</span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span class="status-dot yellow"></span>
+                                        <span class="badge badge-yellow">Pending</span>
+                                    </div>
                                     break;
                                 case "Cancelled":
-                                    <span class="badge badge-red">Cancelled</span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span class="status-dot red"></span>
+                                        <span class="badge badge-red">Cancelled</span>
+                                    </div>
                                     break;
                                 default:
                                     <span class="badge badge-blue">@o.Status</span>
@@ -66,7 +101,8 @@
                         </td>
                         <td>
                             <a asp-action="Detail" asp-route-id="@o.OrderId"
-                               class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;">View</a>
+                               class="btn btn-ghost"
+                               style="padding: 5px 10px; font-size: 12px;">View</a>
                         </td>
                     </tr>
                 }

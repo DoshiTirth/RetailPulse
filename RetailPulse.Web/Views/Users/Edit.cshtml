@@ -2,16 +2,32 @@
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>User Management</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Edit User</span>
+        </div>
         <h1>Edit User</h1>
         <p>Update user details and role</p>
     </div>
-    <a asp-action="Index" class="btn btn-ghost">Back to Users</a>
+    <a asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back
+    </a>
 </div>
 
 <div class="card animate-in" style="max-width: 560px;">
     <form asp-action="Edit" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" name="userId" value="@Model.UserId" />
+
+        <div class="section-divider"><span>Account Info</span></div>
 
         <div class="grid-2">
             <div class="form-group">
@@ -41,13 +57,30 @@
             </select>
         </div>
 
+        <div class="section-divider"><span>Security</span></div>
+
         <div class="form-group">
-            <label>New Password <span style="color: var(--text-faint); font-weight: 400; text-transform: none;">(leave blank to keep current)</span></label>
-            <input type="password" name="newPassword" placeholder="Enter new password to change" />
+            <label>
+                New Password
+                <span style="color: var(--color-text-faint); font-weight: 400;
+                             text-transform: none; font-size: 11px;">
+                    (leave blank to keep current)
+                </span>
+            </label>
+            <input type="password" name="newPassword"
+                   placeholder="Enter new password to change" />
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 8px;">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Save Changes
+            </button>
             <a asp-action="Index" class="btn btn-ghost">Cancel</a>
         </div>
     </form>

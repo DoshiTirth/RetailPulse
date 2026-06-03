@@ -1,48 +1,78 @@
-﻿@model RetailPulse.Web.Models.Customer
+﻿@{
+    ViewData["Title"] = "Add Customer";
+}
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>Customers</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Add Customer</span>
+        </div>
         <h1>Add Customer</h1>
         <p>Register a new customer</p>
     </div>
-    <a asp-action="Index" class="btn btn-ghost">Back to Customers</a>
+    <a asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back
+    </a>
 </div>
 
 <div class="card animate-in" style="max-width: 680px;">
     <form asp-action="Create" method="post">
         @Html.AntiForgeryToken()
 
-        <div class="grid-2">
-            <div class="form-group">
-                <label asp-for="FirstName"></label>
-                <input asp-for="FirstName" placeholder="e.g. Emma" />
-                <span asp-validation-for="FirstName" class="field-validation-error"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName"></label>
-                <input asp-for="LastName" placeholder="e.g. Thompson" />
-                <span asp-validation-for="LastName" class="field-validation-error"></span>
-            </div>
-        </div>
+        <div class="section-divider"><span>Personal Info</span></div>
 
         <div class="grid-2">
             <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" type="email" placeholder="email@example.com" />
+                <label>First Name</label>
+                <input type="text" name="FirstName"
+                       placeholder="e.g. Emma" required />
             </div>
             <div class="form-group">
-                <label asp-for="Phone"></label>
-                <input asp-for="Phone" placeholder="e.g. 416-555-0101" />
+                <label>Last Name</label>
+                <input type="text" name="LastName"
+                       placeholder="e.g. Thompson" required />
+            </div>
+        </div>
+
+        <div class="section-divider"><span>Contact Details</span></div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="Email"
+                       placeholder="email@example.com" />
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" name="Phone"
+                       placeholder="e.g. 416-555-0101" />
             </div>
         </div>
 
         <div class="form-group" style="max-width: 300px;">
-            <label asp-for="City"></label>
-            <input asp-for="City" placeholder="e.g. Toronto" />
+            <label>City</label>
+            <input type="text" name="City" placeholder="e.g. Toronto" />
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 8px;">
-            <button type="submit" class="btn btn-primary">Save Customer</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Save Customer
+            </button>
             <a asp-action="Index" class="btn btn-ghost">Cancel</a>
         </div>
     </form>
