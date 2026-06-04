@@ -14,6 +14,49 @@
     </div>
 </div>
 
+<!-- Date Range Filter -->
+<div class="card animate-in" style="margin-bottom: 24px; padding: 16px 20px;">
+    <form asp-action="Index" method="get">
+        <div class="filter-bar">
+            <div class="filter-row">
+                <div class="filter-field">
+                    <label>FROM DATE</label>
+                    <input type="date" name="from" value="@ViewBag.FilterFrom" />
+                </div>
+                <div class="filter-field">
+                    <label>TO DATE</label>
+                    <input type="date" name="to" value="@ViewBag.FilterTo" />
+                </div>
+                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                    <!-- Quick ranges -->
+                    <a asp-action="Index"
+                       asp-route-from="@DateTime.UtcNow.AddDays(-7).ToString("yyyy-MM-dd")"
+                       asp-route-to="@DateTime.UtcNow.ToString("yyyy-MM-dd")"
+                       class="btn btn-ghost" style="padding: 9px 12px; font-size: 12px;">
+                        7 days
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-from="@DateTime.UtcNow.AddDays(-30).ToString("yyyy-MM-dd")"
+                       asp-route-to="@DateTime.UtcNow.ToString("yyyy-MM-dd")"
+                       class="btn btn-ghost" style="padding: 9px 12px; font-size: 12px;">
+                        30 days
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-from="@DateTime.UtcNow.AddMonths(-3).ToString("yyyy-MM-dd")"
+                       asp-route-to="@DateTime.UtcNow.ToString("yyyy-MM-dd")"
+                       class="btn btn-ghost" style="padding: 9px 12px; font-size: 12px;">
+                        3 months
+                    </a>
+                    <button type="submit" class="btn btn-primary"
+                            style="padding: 9px 16px;">Apply</button>
+                    <a asp-action="Index" class="btn btn-ghost"
+                       style="padding: 9px 16px;">Reset</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <!-- Charts Row -->
 <div class="grid-2" style="margin-bottom: 24px;">
     <div class="card animate-in">
@@ -52,6 +95,8 @@
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="revenue" />
+            <input type="hidden" name="from" value="@ViewBag.FilterFrom" />
+            <input type="hidden" name="to" value="@ViewBag.FilterTo" />
             <button type="submit" class="btn @(Model.SelectedReport == "revenue" ? "btn-primary" : "btn-ghost")"
                     style="gap: 8px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -65,6 +110,8 @@
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="products" />
+            <input type="hidden" name="from" value="@ViewBag.FilterFrom" />
+            <input type="hidden" name="to" value="@ViewBag.FilterTo" />
             <button type="submit" class="btn @(Model.SelectedReport == "products" ? "btn-primary" : "btn-ghost")"
                     style="gap: 8px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -77,6 +124,8 @@
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="category" />
+            <input type="hidden" name="from" value="@ViewBag.FilterFrom" />
+            <input type="hidden" name="to" value="@ViewBag.FilterTo" />
             <button type="submit" class="btn @(Model.SelectedReport == "category" ? "btn-primary" : "btn-ghost")"
                     style="gap: 8px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -91,6 +140,8 @@
         <form asp-action="Preview" method="post" style="display:inline;">
             @Html.AntiForgeryToken()
             <input type="hidden" name="reportType" value="lowstock" />
+            <input type="hidden" name="from" value="@ViewBag.FilterFrom" />
+            <input type="hidden" name="to" value="@ViewBag.FilterTo" />
             <button type="submit" class="btn @(Model.SelectedReport == "lowstock" ? "btn-primary" : "btn-ghost")"
                     style="gap: 8px;">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -128,7 +179,7 @@
                     </span>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                    <a asp-action="DownloadCsv" asp-route-reportType="@Model.SelectedReport"
+                    <a asp-action="DownloadCsv" asp-route-reportType="@Model.SelectedReport" asp-route-from="@ViewBag.FilterFrom" asp-route-to="@ViewBag.FilterTo"
                        class="btn btn-ghost" style="font-size: 12px; padding: 6px 14px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2">
@@ -138,7 +189,7 @@
                         </svg>
                         CSV
                     </a>
-                    <a asp-action="DownloadPdf" asp-route-reportType="@Model.SelectedReport"
+                    <a asp-action="DownloadPdf" asp-route-reportType="@Model.SelectedReport" asp-route-from="@ViewBag.FilterFrom" asp-route-to="@ViewBag.FilterTo"
                        class="btn btn-primary" style="font-size: 12px; padding: 6px 14px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2">
