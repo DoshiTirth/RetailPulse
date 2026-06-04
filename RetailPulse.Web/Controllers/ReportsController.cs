@@ -7,6 +7,7 @@ using RetailPulse.Web.Data;
 using RetailPulse.Web.Models.ViewModels;
 using RetailPulse.Web.Services;
 using System.Text;
+using ClosedXML.Excel;
 
 namespace RetailPulse.Web.Controllers;
 
@@ -59,6 +60,180 @@ public class ReportsController : Controller
         var pdfBytes = GeneratePdf(vm, reportType);
         var fileName = $"{reportType}_{DateTime.Now:yyyyMMdd}.pdf";
         return File(pdfBytes, "application/pdf", fileName);
+    }
+
+    // DOWNLOAD EXCEL
+    public async Task<IActionResult> DownloadExcel(string reportType,
+    DateTime? from, DateTime? to)
+    {
+        var vm = await BuildReportViewModel(from, to);
+        vm.SelectedReport = reportType;
+
+        using var workbook = new XLWorkbook();
+        var title = reportType switch
+        {
+            "revenue" => "Monthly Revenue",
+            "products" => "Top Products",
+            "category" => "Sales by Category",
+            "lowstock" => "Low Stock Report",
+            _ => "Report"
+        };
+
+        var ws = workbook.Worksheets.Add(title);
+
+        // Header Row Styling
+        ws.Row(1).Height = 30;
+
+        // Title row
+        ws.Cell(1, 1).Value = $"RetailPulse ERP — {title}";
+        ws.Cell(1, 1).Style
+            .Font.SetBold(true)
+            .Font.SetFontSize(14)
+            .Font.SetFontColor(XLColor.FromHtml("#22C55E"));
+
+        ws.Cell(2, 1).Value = $"Generated: {DateTime.Now:MMMM d, yyyy h:mm tt}";
+        ws.Cell(2, 1).Style
+            .Font.SetFontSize(10)
+            .Font.SetFontColor(XLColor.FromHtml("#64748B"));
+
+        if (from.HasValue || to.HasValue)
+        {
+            ws.Cell(3, 1).Value = $"Date Range: {from?.ToString("MMM d, yyyy") ?? "All"} — {to?.ToString("MMM d, yyyy") ?? "Present"}";
+            ws.Cell(3, 1).Style
+                .Font.SetFontSize(10)
+                .Font.SetFontColor(XLColor.FromHtml("#64748B"));
+        }
+
+        int dataRow = 5;
+
+        // Column Headers
+        void StyleHeader(IXLCell cell, string value)
+        {
+            cell.Value = value;
+            cell.Style
+                .Font.SetBold(true)
+                .Font.SetFontColor(XLColor.White)
+                .Fill.SetBackgroundColor(XLColor.FromHtml("#0F172A"))
+                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+            cell.WorksheetRow().Height = 22;
+        }
+
+        void StyleDataCell(IXLCell cell, bool isEven)
+        {
+            if (isEven)
+                cell.Style.Fill.SetBackgroundColor(XLColor.FromHtml("#F8FAFC"));
+        }
+
+        if (reportType == "revenue")
+        {
+            StyleHeader(ws.Cell(dataRow, 1), "Month");
+            StyleHeader(ws.Cell(dataRow, 2), "Orders");
+            StyleHeader(ws.Cell(dataRow, 3), "Revenue ($)");
+            dataRow++;
+
+            foreach (var r in vm.MonthlyRevenue)
+            {
+                bool isEven = (dataRow % 2 == 0);
+                ws.Cell(dataRow, 1).Value = r.Label;
+                ws.Cell(dataRow, 2).Value = r.Orders;
+                ws.Cell(dataRow, 3).Value = r.Revenue;
+                ws.Cell(dataRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                StyleDataCell(ws.Cell(dataRow, 1), isEven);
+                StyleDataCell(ws.Cell(dataRow, 2), isEven);
+                StyleDataCell(ws.Cell(dataRow, 3), isEven);
+                dataRow++;
+            }
+
+            // Total row
+            ws.Cell(dataRow, 1).Value = "Total";
+            ws.Cell(dataRow, 1).Style.Font.SetBold(true);
+            ws.Cell(dataRow, 2).Value = vm.TotalOrders;
+            ws.Cell(dataRow, 2).Style.Font.SetBold(true);
+            ws.Cell(dataRow, 3).Value = vm.TotalRevenue;
+            ws.Cell(dataRow, 3).Style
+                .Font.SetBold(true)
+                .Font.SetFontColor(XLColor.FromHtml("#22C55E"))
+                .NumberFormat.Format = "#,##0.00";
+        }
+        else if (reportType == "products")
+        {
+            StyleHeader(ws.Cell(dataRow, 1), "Product");
+            StyleHeader(ws.Cell(dataRow, 2), "Units Sold");
+            StyleHeader(ws.Cell(dataRow, 3), "Revenue ($)");
+            dataRow++;
+
+            foreach (var p in vm.TopProducts)
+            {
+                bool isEven = (dataRow % 2 == 0);
+                ws.Cell(dataRow, 1).Value = p.ProductName;
+                ws.Cell(dataRow, 2).Value = p.UnitsSold;
+                ws.Cell(dataRow, 3).Value = p.Revenue;
+                ws.Cell(dataRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                StyleDataCell(ws.Cell(dataRow, 1), isEven);
+                StyleDataCell(ws.Cell(dataRow, 2), isEven);
+                StyleDataCell(ws.Cell(dataRow, 3), isEven);
+                dataRow++;
+            }
+        }
+        else if (reportType == "category")
+        {
+            StyleHeader(ws.Cell(dataRow, 1), "Category");
+            StyleHeader(ws.Cell(dataRow, 2), "Transactions");
+            StyleHeader(ws.Cell(dataRow, 3), "Revenue ($)");
+            dataRow++;
+
+            foreach (var c in vm.ByCategory)
+            {
+                bool isEven = (dataRow % 2 == 0);
+                ws.Cell(dataRow, 1).Value = c.CategoryName;
+                ws.Cell(dataRow, 2).Value = c.Orders;
+                ws.Cell(dataRow, 3).Value = c.Revenue;
+                ws.Cell(dataRow, 3).Style.NumberFormat.Format = "#,##0.00";
+                StyleDataCell(ws.Cell(dataRow, 1), isEven);
+                StyleDataCell(ws.Cell(dataRow, 2), isEven);
+                StyleDataCell(ws.Cell(dataRow, 3), isEven);
+                dataRow++;
+            }
+        }
+        else if (reportType == "lowstock")
+        {
+            StyleHeader(ws.Cell(dataRow, 1), "Product");
+            StyleHeader(ws.Cell(dataRow, 2), "Category");
+            StyleHeader(ws.Cell(dataRow, 3), "Supplier");
+            StyleHeader(ws.Cell(dataRow, 4), "Stock");
+            StyleHeader(ws.Cell(dataRow, 5), "Reorder Level");
+            dataRow++;
+
+            foreach (var p in vm.LowStock)
+            {
+                bool isEven = (dataRow % 2 == 0);
+                ws.Cell(dataRow, 1).Value = p.Name;
+                ws.Cell(dataRow, 2).Value = p.Category.Name;
+                ws.Cell(dataRow, 3).Value = p.Supplier.Name;
+                ws.Cell(dataRow, 4).Value = p.StockQuantity;
+                ws.Cell(dataRow, 4).Style.Font.SetFontColor(XLColor.FromHtml("#EF4444"));
+                ws.Cell(dataRow, 5).Value = p.ReorderLevel;
+                for (int col = 1; col <= 5; col++)
+                    StyleDataCell(ws.Cell(dataRow, col), isEven);
+                dataRow++;
+            }
+        }
+
+        // Auto-fit columns
+        ws.Columns().AdjustToContents();
+
+        // Add border to data range
+        var dataRange = ws.Range(dataRow - vm.MonthlyRevenue.Count - 1, 1,
+                                 dataRow - 1, reportType == "lowstock" ? 5 : 3);
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        var fileName = $"{reportType}_{DateTime.Now:yyyyMMdd}.xlsx";
+        return File(stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName);
     }
 
     // Private Helpers
