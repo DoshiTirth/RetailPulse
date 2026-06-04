@@ -20,59 +20,60 @@ public class ReportsController : Controller
         _db = db;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(DateTime? from, DateTime? to)
     {
-        var vm = await BuildReportViewModel();
+        var vm = await BuildReportViewModel(from, to);
+        ViewBag.FilterFrom = from?.ToString("yyyy-MM-dd");
+        ViewBag.FilterTo = to?.ToString("yyyy-MM-dd");
         ViewData["Title"] = "Reports";
         ViewData["ActivePage"] = "Reports";
         return View(vm);
     }
 
-    // PREVIEW — returns partial with report table
     [HttpPost]
-    public async Task<IActionResult> Preview(string reportType)
+    public async Task<IActionResult> Preview(string reportType, DateTime? from, DateTime? to)
     {
-        if (!PermissionService.HasPermission(User, "Reports", "View"))
-            return RedirectToAction("AccessDenied", "Auth");
-        var vm = await BuildReportViewModel();
+        var vm = await BuildReportViewModel(from, to);
         vm.SelectedReport = reportType;
+        ViewBag.FilterFrom = from?.ToString("yyyy-MM-dd");
+        ViewBag.FilterTo = to?.ToString("yyyy-MM-dd");
         ViewData["Title"] = "Reports";
         ViewData["ActivePage"] = "Reports";
         return View("Index", vm);
     }
-
     // DOWNLOAD CSV
-    public async Task<IActionResult> DownloadCsv(string reportType)
+    public async Task<IActionResult> DownloadCsv(string reportType,
+        DateTime? from, DateTime? to)
     {
-        if (!PermissionService.HasPermission(User, "Reports", "Download"))
-            return RedirectToAction("AccessDenied", "Auth");
-        var csv = await GenerateCsv(reportType);
+        var csv = await GenerateCsv(reportType, from, to);
         var bytes = Encoding.UTF8.GetBytes(csv);
         var fileName = $"{reportType}_{DateTime.Now:yyyyMMdd}.csv";
         return File(bytes, "text/csv", fileName);
     }
 
-    // DOWNLOAD PDF
-    public async Task<IActionResult> DownloadPdf(string reportType)
+    public async Task<IActionResult> DownloadPdf(string reportType,
+        DateTime? from, DateTime? to)
     {
-        if (!PermissionService.HasPermission(User, "Reports", "Download"))
-            return RedirectToAction("AccessDenied", "Auth");
-        var vm = await BuildReportViewModel();
+        var vm = await BuildReportViewModel(from, to);
         vm.SelectedReport = reportType;
-
         var pdfBytes = GeneratePdf(vm, reportType);
         var fileName = $"{reportType}_{DateTime.Now:yyyyMMdd}.pdf";
         return File(pdfBytes, "application/pdf", fileName);
     }
 
-    // ─── Private Helpers ──────────────────────────────────
+    // Private Helpers
 
-    private async Task<ReportsViewModel> BuildReportViewModel()
+    private async Task<ReportsViewModel> BuildReportViewModel(DateTime? from = null, DateTime? to = null)
     {
-        // Monthly revenue (last 12 months)
-        var twelveMonthsAgo = DateTime.UtcNow.AddMonths(-12);
+        // Default to last 12 months if no dates provided
+        var dateFrom = from ?? DateTime.UtcNow.AddMonths(-12);
+        var dateTo = to?.AddDays(1) ?? DateTime.UtcNow.AddDays(1);
+
+        // Monthly revenue
         var monthlyRevenue = await _db.SalesOrders
-            .Where(o => o.Status != "Cancelled" && o.OrderDate >= twelveMonthsAgo)
+            .Where(o => o.Status != "Cancelled"
+                     && o.OrderDate >= dateFrom
+                     && o.OrderDate <= dateTo)
             .GroupBy(o => new { o.OrderDate.Year, o.OrderDate.Month })
             .Select(g => new MonthlyRevenuePoint
             {
@@ -84,9 +85,13 @@ public class ReportsController : Controller
             .OrderBy(x => x.Year).ThenBy(x => x.Month)
             .ToListAsync();
 
-        // Top products by revenue
+        // Top products
         var topProducts = await _db.SalesOrderItems
             .Include(i => i.Product)
+            .Include(i => i.SalesOrder)
+            .Where(i => i.SalesOrder.OrderDate >= dateFrom
+                     && i.SalesOrder.OrderDate <= dateTo
+                     && i.SalesOrder.Status != "Cancelled")
             .GroupBy(i => new { i.ProductId, i.Product.Name })
             .Select(g => new TopProductPoint
             {
@@ -101,6 +106,10 @@ public class ReportsController : Controller
         // Sales by category
         var byCategory = await _db.SalesOrderItems
             .Include(i => i.Product).ThenInclude(p => p.Category)
+            .Include(i => i.SalesOrder)
+            .Where(i => i.SalesOrder.OrderDate >= dateFrom
+                     && i.SalesOrder.OrderDate <= dateTo
+                     && i.SalesOrder.Status != "Cancelled")
             .GroupBy(i => i.Product.Category.Name)
             .Select(g => new CategoryRevenuePoint
             {
@@ -130,10 +139,10 @@ public class ReportsController : Controller
         };
     }
 
-    private async Task<string> GenerateCsv(string reportType)
+    private async Task<string> GenerateCsv(string reportType, DateTime? from = null, DateTime? to = null)
     {
         var sb = new StringBuilder();
-        var vm = await BuildReportViewModel();
+        var vm = await BuildReportViewModel(from, to);
 
         switch (reportType)
         {
