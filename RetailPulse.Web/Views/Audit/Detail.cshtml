@@ -1,0 +1,148 @@
+﻿@model RetailPulse.Web.Models.AuditLog
+
+<div class="page-header">
+    <div>
+        <div class="page-header-meta">
+            <span>Audit Log</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Entry #@Model.AuditId</span>
+        </div>
+        <h1>Audit Entry #@Model.AuditId</h1>
+        <p>@Model.CreatedAt.ToString("MMMM d, yyyy h:mm tt")</p>
+    </div>
+    <a asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back to Audit Log
+    </a>
+</div>
+
+<div class="grid-2" style="margin-bottom: 24px;">
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Event Info</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    USER
+                </div>
+                <div style="font-weight: 600;">@Model.Username</div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    MODULE
+                </div>
+                <span class="badge badge-blue">@Model.Module</span>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    ACTION
+                </div>
+                @{
+                    var actionColor = Model.Action switch
+                    {
+                        "Create" => "badge-green",
+                        "Edit" => "badge-blue",
+                        "Delete" => "badge-red",
+                        "Deactivate" => "badge-yellow",
+                        "Activate" => "badge-green",
+                        _ => "badge-blue"
+                    };
+                }
+                <span class="badge @actionColor">@Model.Action</span>
+            </div>
+            @if (Model.EntityName != null)
+            {
+                <div>
+                    <div style="font-size: 11px; color: var(--color-text-faint);
+                                     margin-bottom: 3px;">
+                        ENTITY
+                    </div>
+                    <div>
+                        @Model.EntityName
+                        @if (Model.EntityId.HasValue)
+                        {
+                            <span style="font-family: var(--font-mono); font-size: 12px;
+                                                 color: var(--color-text-faint);">
+                                (#@Model.EntityId)
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    IP ADDRESS
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 12px;">
+                    @(Model.IpAddress ?? "—")
+                </div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    TIMESTAMP
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 12px;">
+                    @Model.CreatedAt.ToString("MMMM d, yyyy h:mm:ss tt")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Change Details</span>
+        </div>
+        @if (Model.NewValues != null)
+        {
+            <div style="margin-bottom: 16px;">
+                <div style="font-size: 11px; color: var(--color-accent);
+                                 font-weight: 700; text-transform: uppercase;
+                                 letter-spacing: 0.5px; margin-bottom: 8px;">
+                    New Values
+                </div>
+                <pre style="background: var(--color-secondary);
+                                border: 1px solid var(--color-border);
+                                border-radius: var(--radius-md);
+                                padding: 14px; font-family: var(--font-mono);
+                                font-size: 12px; color: var(--color-text-primary);
+                                overflow-x: auto; white-space: pre-wrap;
+                                word-break: break-all;">@Model.NewValues</pre>
+            </div>
+        }
+        @if (Model.OldValues != null)
+        {
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                                 font-weight: 700; text-transform: uppercase;
+                                 letter-spacing: 0.5px; margin-bottom: 8px;">
+                    Old Values
+                </div>
+                <pre style="background: var(--color-secondary);
+                                border: 1px solid var(--color-border);
+                                border-radius: var(--radius-md);
+                                padding: 14px; font-family: var(--font-mono);
+                                font-size: 12px; color: var(--color-text-faint);
+                                overflow-x: auto; white-space: pre-wrap;
+                                word-break: break-all;">@Model.OldValues</pre>
+            </div>
+        }
+        @if (Model.NewValues == null && Model.OldValues == null)
+        {
+            <div class="empty-state">
+                <p>No change details recorded for this entry.</p>
+            </div>
+        }
+    </div>
+</div>
