@@ -179,7 +179,10 @@
                     </span>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                    <a asp-action="DownloadCsv" asp-route-reportType="@Model.SelectedReport" asp-route-from="@ViewBag.FilterFrom" asp-route-to="@ViewBag.FilterTo"
+                    <a asp-action="DownloadCsv"
+                       asp-route-reportType="@Model.SelectedReport"
+                       asp-route-from="@ViewBag.FilterFrom"
+                       asp-route-to="@ViewBag.FilterTo"
                        class="btn btn-ghost" style="font-size: 12px; padding: 6px 14px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2">
@@ -189,7 +192,25 @@
                         </svg>
                         CSV
                     </a>
-                    <a asp-action="DownloadPdf" asp-route-reportType="@Model.SelectedReport" asp-route-from="@ViewBag.FilterFrom" asp-route-to="@ViewBag.FilterTo"
+                    <a asp-action="DownloadExcel"
+                       asp-route-reportType="@Model.SelectedReport"
+                       asp-route-from="@ViewBag.FilterFrom"
+                       asp-route-to="@ViewBag.FilterTo"
+                       class="btn btn-ghost" style="font-size: 12px; padding: 6px 14px;
+                              color: var(--color-green); border-color: rgba(34,197,94,0.3);">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <line x1="3" y1="9" x2="21" y2="9"/>
+                            <line x1="3" y1="15" x2="21" y2="15"/>
+                            <line x1="9" y1="3" x2="9" y2="21"/>
+                        </svg>
+                        Excel
+                    </a>
+                    <a asp-action="DownloadPdf"
+                       asp-route-reportType="@Model.SelectedReport"
+                       asp-route-from="@ViewBag.FilterFrom"
+                       asp-route-to="@ViewBag.FilterTo"
                        class="btn btn-primary" style="font-size: 12px; padding: 6px 14px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2">
