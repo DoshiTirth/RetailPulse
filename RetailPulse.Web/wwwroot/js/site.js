@@ -246,3 +246,30 @@ if (globalSearch) {
         }
     });
 }
+
+//Mobile Sidebar
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const sidebar = document.querySelector('.sidebar');
+
+function openMobileMenu() {
+    sidebar?.classList.add('mobile-open');
+    sidebarOverlay?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+    sidebar?.classList.remove('mobile-open');
+    sidebarOverlay?.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+mobileMenuBtn?.addEventListener('click', openMobileMenu);
+sidebarOverlay?.addEventListener('click', closeMobileMenu);
+
+// Close on nav item click on mobile
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) closeMobileMenu();
+    });
+});

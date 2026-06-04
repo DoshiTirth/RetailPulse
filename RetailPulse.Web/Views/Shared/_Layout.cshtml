@@ -12,7 +12,8 @@
 </head>
 <body>
     <div class="app-shell">
-
+        <!-- Mobile Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Sidebar -->
         <aside class="sidebar">
             <!-- Logo -->
@@ -236,6 +237,15 @@
         <!-- Main Area -->
         <div class="main-area">
             <header class="topbar" style="justify-content: space-between;">
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
                 <!-- Left: Title + Breadcrumb -->
                 <div style="display: flex; flex-direction: column; justify-content: center; min-width: 200px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
