@@ -52,67 +52,66 @@
 <!-- Filter Bar -->
 <div class="card animate-in" style="margin-bottom: 16px; padding: 16px 20px;">
     <form asp-action="Index" method="get">
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
-            <div style="flex: 1; min-width: 200px;">
-                <label style="font-size: 11px; color: var(--color-text-faint);
-                               margin-bottom: 4px; display: block;">SEARCH</label>
-                <div class="input-group">
-                    <svg class="input-icon" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    <input type="text" name="search" value="@ViewBag.FilterSearch"
-                           placeholder="Search name or SKU..." />
+        <div class="filter-bar">
+            <div class="filter-row">
+                <div class="filter-field" style="max-width: 400px;">
+                    <label>SEARCH</label>
+                    <div class="input-group">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" name="search" value="@ViewBag.FilterSearch"
+                               placeholder="Search name or SKU..." />
+                    </div>
                 </div>
-            </div>
-            <div style="min-width: 160px;">
-                <label style="font-size: 11px; color: var(--color-text-faint);
-                               margin-bottom: 4px; display: block;">CATEGORY</label>
-                <select name="category">
-                    <option value="">All Categories</option>
-                    @foreach (var c in (List<RetailPulse.Web.Models.Category>)ViewBag.Categories)
-                    {
-                        if (ViewBag.FilterCat == c.Name)
+                <div class="filter-field">
+                    <label>CATEGORY</label>
+                    <select name="category">
+                        <option value="">All Categories</option>
+                        @foreach (var c in (List<RetailPulse.Web.Models.Category>)ViewBag.Categories)
                         {
-                            <option value="@c.Name" selected>@c.Name</option>
+                            if (ViewBag.FilterCat == c.Name)
+                            {
+                                <option value="@c.Name" selected>@c.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@c.Name">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label>STATUS</label>
+                    <select name="status">
+                        <option value="">All</option>
+                        @if (ViewBag.FilterStatus == "active")
+                        {
+                            <option value="active" selected>Active</option>
+                            <option value="inactive">Inactive</option>
+                        }
+                        else if (ViewBag.FilterStatus == "inactive")
+                        {
+                            <option value="active">Active</option>
+                            <option value="inactive" selected>Inactive</option>
                         }
                         else
                         {
-                            <option value="@c.Name">@c.Name</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
                         }
-                    }
-                </select>
-            </div>
-            <div style="min-width: 140px;">
-                <label style="font-size: 11px; color: var(--color-text-faint);
-                               margin-bottom: 4px; display: block;">STATUS</label>
-                <select name="status">
-                    <option value="">All</option>
-                    @if (ViewBag.FilterStatus == "active")
-                    {
-                        <option value="active" selected>Active</option>
-                        <option value="inactive">Inactive</option>
-                    }
-                    else if (ViewBag.FilterStatus == "inactive")
-                    {
-                        <option value="active">Active</option>
-                        <option value="inactive" selected>Inactive</option>
-                    }
-                    else
-                    {
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    }
-                </select>
-            </div>
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary"
-                        style="padding: 9px 16px;">
-                    Filter
-                </button>
-                <a asp-action="Index" class="btn btn-ghost"
-                   style="padding: 9px 16px;">Clear</a>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary"
+                            style="padding: 9px 16px;">
+                        Filter
+                    </button>
+                    <a asp-action="Index" class="btn btn-ghost"
+                       style="padding: 9px 16px;">Clear</a>
+                </div>
             </div>
         </div>
     </form>
