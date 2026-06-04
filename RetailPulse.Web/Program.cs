@@ -36,6 +36,8 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AuditService>();
 
+builder.Services.AddScoped<EmailService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews(options =>
 {

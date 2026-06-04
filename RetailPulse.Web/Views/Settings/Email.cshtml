@@ -1,0 +1,175 @@
+﻿@{
+    ViewData["Title"] = "Email Settings";
+}
+
+<div class="page-header">
+    <div>
+        <div class="page-header-meta">
+            <span>Administration</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Email Settings</span>
+        </div>
+        <h1>Email Settings</h1>
+        <p>Configure SMTP and test email notifications</p>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        @TempData["Success"]
+    </div>
+}
+
+<div class="grid-2">
+    <!-- Current Config -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Current Configuration</span>
+            <span class="badge @(ViewBag.Enabled ? "badge-green" : "badge-red")">
+                @(ViewBag.Enabled ? "Enabled" : "Disabled")
+            </span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    SMTP HOST
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 13px;">
+                    @(ViewBag.Host ?? "Not configured")
+                </div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    PORT
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 13px;">
+                    @(ViewBag.Port ?? "587")
+                </div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    USERNAME
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 13px;">
+                    @(ViewBag.Username ?? "Not configured")
+                </div>
+            </div>
+            <div>
+                <div style="font-size: 11px; color: var(--color-text-faint);
+                             margin-bottom: 3px;">
+                    FROM NAME
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 13px;">
+                    @(ViewBag.FromName ?? "RetailPulse ERP")
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"><span>How to Enable</span></div>
+
+        <div style="background: var(--color-secondary); border-radius: var(--radius-md);
+                    padding: 14px; font-size: 12px; color: var(--color-text-secondary);
+                    line-height: 1.8;">
+            Edit <span style="font-family: var(--font-mono); color: var(--color-accent);">
+                appsettings.json
+            </span> and update the Email section:
+            <pre style="background: var(--color-muted); border-radius: var(--radius-sm);
+                        padding: 12px; margin-top: 10px; font-size: 11px;
+                        color: var(--color-text-primary); overflow-x: auto;">"Email": {
+  "Host": "smtp.gmail.com",
+  "Port": 587,
+  "Username": "you@gmail.com",
+  "Password": "your-app-password",
+  "FromName": "RetailPulse ERP",
+  "FromEmail": "you@gmail.com",
+  "Enabled": true
+}</pre>
+            <div style="margin-top: 10px; color: var(--color-text-faint); font-size: 11px;">
+                For Gmail: enable 2FA and generate an App Password at
+                myaccount.google.com/apppasswords
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Email -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Test Email</span>
+        </div>
+        <p style="color: var(--color-text-faint); font-size: 13px; margin-bottom: 20px;">
+            Send a test email to verify your SMTP configuration is working correctly.
+        </p>
+        <form asp-action="TestEmail" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label>Send Test Email To</label>
+                <input type="email" name="testEmail"
+                       placeholder="test@example.com" required />
+            </div>
+            <button type="submit" class="btn btn-primary"
+                    @(!ViewBag.Enabled ? "disabled style='opacity:0.5; cursor:not-allowed;'" : "")>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+                Send Test Email
+            </button>
+            @if (!ViewBag.Enabled)
+            {
+                <p style="color: var(--color-yellow); font-size: 12px; margin-top: 8px;">
+                    Enable email in appsettings.json first
+                </p>
+            }
+        </form>
+
+        <div class="section-divider"><span>Notification Types</span></div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;
+                        padding: 12px; background: var(--color-secondary);
+                        border-radius: var(--radius-md);">
+                <div>
+                    <div style="font-weight: 600; font-size: 13px;">Low Stock Alert</div>
+                    <div style="font-size: 12px; color: var(--color-text-faint);">
+                        Triggered when product stock drops below reorder level
+                    </div>
+                </div>
+                <span class="badge badge-green">Active</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;
+                        padding: 12px; background: var(--color-secondary);
+                        border-radius: var(--radius-md);">
+                <div>
+                    <div style="font-weight: 600; font-size: 13px;">New Order</div>
+                    <div style="font-size: 12px; color: var(--color-text-faint);">
+                        Sent to admin when a new order is created
+                    </div>
+                </div>
+                <span class="badge badge-green">Active</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;
+                        padding: 12px; background: var(--color-secondary);
+                        border-radius: var(--radius-md);">
+                <div>
+                    <div style="font-weight: 600; font-size: 13px;">Order Status Change</div>
+                    <div style="font-size: 12px; color: var(--color-text-faint);">
+                        Sent when order is completed or cancelled
+                    </div>
+                </div>
+                <span class="badge badge-green">Active</span>
+            </div>
+        </div>
+    </div>
+</div>
