@@ -9,10 +9,12 @@ namespace RetailPulse.Web.Controllers;
 public class CustomersController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
 
-    public CustomersController(AppDbContext db)
+    public CustomersController(AppDbContext db, AuditService audit)
     {
         _db = db;
+        _audit = audit;
     }
 
     // LIST
@@ -50,6 +52,9 @@ public class CustomersController : Controller
             customer.CreatedAt = DateTime.UtcNow;
             _db.Customers.Add(customer);
             await _db.SaveChangesAsync();
+            await _audit.LogAsync("Customers", "Create",
+            customer.CustomerId, customer.FullName,
+            newValues: new { customer.FirstName, customer.LastName, customer.Email, customer.City });
             TempData["Success"] = $"Customer '{customer.FullName}' added successfully.";
             return RedirectToAction(nameof(Index));
         }
@@ -85,6 +90,9 @@ public class CustomersController : Controller
         {
             _db.Update(customer);
             await _db.SaveChangesAsync();
+            await _audit.LogAsync("Customers", "Edit",
+            customer.CustomerId, customer.FullName,
+            newValues: new { customer.FirstName, customer.LastName, customer.Email, customer.City });
             TempData["Success"] = $"Customer '{customer.FullName}' updated successfully.";
             return RedirectToAction(nameof(Index));
         }

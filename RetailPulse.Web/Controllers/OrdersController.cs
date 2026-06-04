@@ -11,10 +11,14 @@ namespace RetailPulse.Web.Controllers;
 public class OrdersController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
+    private readonly EmailService _email;
 
-    public OrdersController(AppDbContext db)
+    public OrdersController(AppDbContext db, AuditService audit, EmailService email)
     {
         _db = db;
+        _audit = audit;
+        _email = email;
     }
 
     // LIST
@@ -99,6 +103,22 @@ public class OrdersController : Controller
             order.TotalAmount = total;
             await _db.SaveChangesAsync();
 
+            await _audit.LogAsync("Orders", "Create",
+            order.OrderId, $"Order #{order.OrderId}",
+            newValues: new { order.CustomerId, order.TotalAmount, order.Status });
+
+            // Send new order notification
+            var adminEmail = _db.Users
+                .Where(u => u.Role.Name == "SuperAdmin" || u.Role.Name == "Admin")
+                .Select(u => u.Email)
+                .FirstOrDefault();
+
+            if (adminEmail != null)
+                await _email.SendNewOrderNotificationAsync(
+                    adminEmail, order.OrderId,
+                    (await _db.Customers.FindAsync(order.CustomerId))!.FullName,
+                    order.TotalAmount, vm.Items.Count(i => i.ProductId > 0 && i.Quantity > 0));
+
             TempData["Success"] = $"Order #{order.OrderId} created successfully.";
             return RedirectToAction(nameof(Detail), new { id = order.OrderId });
         }
@@ -121,6 +141,22 @@ public class OrdersController : Controller
 
         order.Status = status;
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Orders", "UpdateStatus",
+        order.OrderId, $"Order #{order.OrderId}",
+        newValues: new { Status = status });
+
+        var customer = await _db.Customers.FindAsync(order.CustomerId);
+
+        var adminEmail = _db.Users
+            .Where(u => u.Role.Name == "SuperAdmin" || u.Role.Name == "Admin")
+            .Select(u => u.Email)
+            .FirstOrDefault();
+
+        if (adminEmail != null && customer != null)
+            await _email.SendOrderStatusChangeAsync(
+                adminEmail, order.OrderId,
+                customer.FullName, status, order.TotalAmount);
+
         TempData["Success"] = $"Order #{id} marked as {status}.";
         return RedirectToAction(nameof(Detail), new { id });
     }

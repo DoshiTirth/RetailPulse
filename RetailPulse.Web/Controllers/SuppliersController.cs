@@ -9,10 +9,12 @@ namespace RetailPulse.Web.Controllers;
 public class SuppliersController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
 
-    public SuppliersController(AppDbContext db)
+    public SuppliersController(AppDbContext db, AuditService audit)
     {
         _db = db;
+        _audit = audit;
     }
 
     // LIST
@@ -50,6 +52,9 @@ public class SuppliersController : Controller
             supplier.CreatedAt = DateTime.UtcNow;
             _db.Suppliers.Add(supplier);
             await _db.SaveChangesAsync();
+            await _audit.LogAsync("Suppliers", "Create",
+            supplier.SupplierId, supplier.Name,
+            newValues: new { supplier.Name, supplier.ContactName, supplier.Email });
             TempData["Success"] = $"Supplier '{supplier.Name}' added successfully.";
             return RedirectToAction(nameof(Index));
         }
@@ -85,6 +90,9 @@ public class SuppliersController : Controller
         {
             _db.Update(supplier);
             await _db.SaveChangesAsync();
+            await _audit.LogAsync("Suppliers", "Edit",
+            supplier.SupplierId, supplier.Name,
+            newValues: new { supplier.Name, supplier.ContactName, supplier.Email });
             TempData["Success"] = $"Supplier '{supplier.Name}' updated successfully.";
             return RedirectToAction(nameof(Index));
         }
@@ -106,6 +114,8 @@ public class SuppliersController : Controller
 
         supplier.IsActive = !supplier.IsActive;
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Suppliers", supplier.IsActive ? "Activate" : "Deactivate",
+        supplier.SupplierId, supplier.Name);
         TempData["Success"] = $"Supplier '{supplier.Name}' {(supplier.IsActive ? "activated" : "deactivated")}.";
         return RedirectToAction(nameof(Index));
     }

@@ -10,10 +10,12 @@ namespace RetailPulse.Web.Controllers;
 public class UsersController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
 
-    public UsersController(AppDbContext db)
+    public UsersController(AppDbContext db, AuditService audit)
     {
         _db = db;
+        _audit = audit;
     }
 
     // LIST
@@ -77,6 +79,9 @@ public class UsersController : Controller
 
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Users", "Create",
+        user.UserId, username,
+        newValues: new { Username = username, Email = email, RoleId = roleId });
         TempData["Success"] = $"User '{username}' created successfully.";
         return RedirectToAction(nameof(Index));
     }
@@ -116,6 +121,9 @@ public class UsersController : Controller
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Users", "Edit",
+        user.UserId, username,
+        newValues: new { Username = username, Email = email, RoleId = roleId });
         TempData["Success"] = $"User '{username}' updated successfully.";
         return RedirectToAction(nameof(Index));
     }
@@ -141,6 +149,8 @@ public class UsersController : Controller
 
         user.IsActive = !user.IsActive;
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Users", user.IsActive ? "Activate" : "Deactivate",
+        user.UserId, user.Username);
         TempData["Success"] = $"User '{user.Username}' {(user.IsActive ? "activated" : "deactivated")}.";
         return RedirectToAction(nameof(Index));
     }

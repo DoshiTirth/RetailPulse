@@ -10,10 +10,14 @@ namespace RetailPulse.Web.Controllers;
 public class InventoryController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
+    private readonly EmailService _email;
 
-    public InventoryController(AppDbContext db)
+    public InventoryController(AppDbContext db, AuditService audit, EmailService email)
     {
         _db = db;
+        _audit = audit;
+        _email = email;
     }
 
     // LIST — all stock levels
@@ -76,6 +80,24 @@ public class InventoryController : Controller
 
         _db.RestockLogs.Add(log);
         await _db.SaveChangesAsync();
+
+        await _audit.LogAsync("Inventory", "Restock",
+        id, product.Name,
+        newValues: new { Quantity = quantity, Notes = notes, NewStock = product.StockQuantity });
+
+        if (product.StockQuantity <= product.ReorderLevel)
+        {
+            var adminEmail = _db.Users
+                .Where(u => u.Role.Name == "SuperAdmin" || u.Role.Name == "Admin")
+                .Select(u => u.Email)
+                .FirstOrDefault();
+
+            if (adminEmail != null)
+                await _email.SendLowStockAlertAsync(
+                    adminEmail, product.Name,
+                    product.StockQuantity, product.ReorderLevel,
+                    (await _db.Suppliers.FindAsync(product.SupplierId))!.Name);
+        }
 
         TempData["Success"] = $"Added {quantity} units to {product.Name}. New stock: {product.StockQuantity}.";
         return RedirectToAction(nameof(Index));
