@@ -1,0 +1,182 @@
+﻿@model RetailPulse.Web.Models.ViewModels.CsvImportViewModel
+
+<div class="page-header">
+    <div>
+        <div class="page-header-meta">
+            <span>Products</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Import Products</span>
+        </div>
+        <h1>Import Products</h1>
+        <p>Bulk import products from a CSV file</p>
+    </div>
+    <a asp-controller="Products" asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back to Products
+    </a>
+</div>
+
+@if (Model.Errors.Any())
+{
+    foreach (var error in Model.Errors)
+    {
+        <div class="alert alert-danger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            @error
+        </div>
+    }
+}
+
+<div class="grid-2" style="margin-bottom: 24px;">
+    <!-- Upload Card -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Upload CSV File</span>
+        </div>
+        <form asp-action="Preview" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label>Select CSV File</label>
+                <input type="file" name="file" accept=".csv" required
+                       style="padding: 8px;" />
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Preview Import
+            </button>
+        </form>
+    </div>
+
+    <!-- Template Card -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">CSV Format</span>
+        </div>
+        <p style="color: var(--color-text-faint); font-size: 13px; margin-bottom: 16px;">
+            Your CSV file must have these exact column headers:
+        </p>
+        <pre style="background: var(--color-secondary);
+                    border: 1px solid var(--color-border);
+                    border-radius: var(--radius-md);
+                    padding: 14px; font-family: var(--font-mono);
+                    font-size: 11px; color: var(--color-accent);
+                    overflow-x: auto;">Name,SKU,Category,Supplier,UnitPrice,StockQuantity,ReorderLevel</pre>
+
+        <div class="section-divider"><span>Example Row</span></div>
+
+        <pre style="background: var(--color-secondary);
+                    border: 1px solid var(--color-border);
+                    border-radius: var(--radius-md);
+                    padding: 14px; font-family: var(--font-mono);
+                    font-size: 11px; color: var(--color-text-secondary);
+                    overflow-x: auto;">Laptop Stand,ELEC-010,Electronics,TechSource Inc.,49.99,25,10</pre>
+
+        <div style="margin-top: 16px; font-size: 12px; color: var(--color-text-faint);
+                    line-height: 1.8;">
+            <div>Category and Supplier must match existing names exactly.</div>
+            <div>SKUs must be unique — duplicates will be skipped.</div>
+        </div>
+    </div>
+</div>
+
+@if (Model.HasPreview)
+{
+    <!-- Preview Table -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <span class="card-title">Import Preview</span>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 12px; color: var(--color-green);">
+                    @Model.ValidCount valid
+                </span>
+                <span style="font-size: 12px; color: var(--color-red);">
+                    @(Model.Preview.Count - Model.ValidCount) invalid
+                </span>
+            </div>
+        </div>
+
+        <div class="table-scroll" style="margin-bottom: 20px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Name</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Supplier</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Reorder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Preview)
+                    {
+                        <tr style="@(row.IsValid ? "" : "opacity: 0.6;")">
+                            <td>
+                                @if (row.IsValid)
+                                {
+                                    <span class="badge badge-green">Valid</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-red"
+                                          data-tooltip="@row.ErrorMessage">Error</span>
+                                }
+                            </td>
+                            <td style="font-weight: 600;">@row.Name</td>
+                            <td style="font-family: var(--font-mono); font-size: 12px;">
+                                @row.SKU
+                            </td>
+                            <td>@row.CategoryName</td>
+                            <td style="color: var(--color-text-secondary);">
+                                @row.SupplierName
+                            </td>
+                            <td style="font-family: var(--font-mono);">
+                                $@row.UnitPrice.ToString("N2")
+                            </td>
+                            <td style="font-family: var(--font-mono);">
+                                @row.StockQuantity
+                            </td>
+                            <td style="font-family: var(--font-mono);">
+                                @row.ReorderLevel
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (Model.ValidCount > 0)
+        {
+            <form asp-action="Import" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Import @Model.ValidCount Valid Products
+                </button>
+            </form>
+        }
+    </div>
+}
