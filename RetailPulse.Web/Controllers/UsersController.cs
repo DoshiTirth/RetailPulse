@@ -161,4 +161,32 @@ public class UsersController : Controller
             await _db.Roles.OrderBy(r => r.Name).ToListAsync(),
             "RoleId", "Name", selectedRoleId);
     }
+
+    // FORCE RESET PASSWORD — POST (Admin only)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForceResetPassword(int id, string newPassword)
+    {
+        if (!PermissionService.HasPermission(User, "Users", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
+
+        var user = await _db.Users.FindAsync(id);
+        if (user == null) return NotFound();
+
+        if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 8)
+        {
+            TempData["Error"] = "Password must be at least 8 characters.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.ResetToken = null;
+        user.ResetTokenExpiry = null;
+        await _db.SaveChangesAsync();
+
+        await _audit.LogAsync("Users", "ForcePasswordReset", user.UserId, user.Username);
+
+        TempData["Success"] = $"Password for '{user.Username}' has been reset.";
+        return RedirectToAction(nameof(Index));
+    }
 }
