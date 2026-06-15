@@ -10,10 +10,12 @@ namespace RetailPulse.Web.Controllers;
 public class ProductsController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
 
-    public ProductsController(AppDbContext db)
+    public ProductsController(AppDbContext db, AuditService audit)
     {
         _db = db;
+        _audit = audit;
     }
 
     // LIST
@@ -100,6 +102,9 @@ public class ProductsController : Controller
 
         _db.Products.Add(product);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Products", "Create",
+        product.ProductId, product.Name,
+        newValues: new { product.Name, product.SKU, product.UnitPrice, product.StockQuantity });
         TempData["Success"] = $"Product '{product.Name}' added successfully.";
         return RedirectToAction(nameof(Index));
     }
@@ -139,6 +144,9 @@ public class ProductsController : Controller
         product.IsActive = IsActive;
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Products", "Edit",
+        ProductId, Name,
+        newValues: new { Name, SKU, UnitPrice, StockQuantity, IsActive });
         TempData["Success"] = $"Product '{product.Name}' updated successfully.";
         return RedirectToAction(nameof(Index));
     }
@@ -155,6 +163,8 @@ public class ProductsController : Controller
 
         product.IsActive = !product.IsActive;
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Products", product.IsActive ? "Activate" : "Deactivate",
+        product.ProductId, product.Name);
         TempData["Success"] = $"Product '{product.Name}' {(product.IsActive ? "activated" : "deactivated")}.";
         return RedirectToAction(nameof(Index));
     }
@@ -178,6 +188,8 @@ public class ProductsController : Controller
 
         _db.Products.Remove(product);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Products", "Delete",
+        product.ProductId, product.Name);
         TempData["Success"] = $"Product '{product.Name}' permanently deleted.";
         return RedirectToAction(nameof(Index));
     }

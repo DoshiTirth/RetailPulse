@@ -21,4 +21,9 @@ public class User
     public DateTime? LastLoginAt { get; set; }
 
     public Role Role { get; set; } = null!;
+
+
+    [MaxLength(100)]
+    public string? ResetToken { get; set; }
+    public DateTime? ResetTokenExpiry { get; set; }
 }

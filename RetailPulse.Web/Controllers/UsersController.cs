@@ -10,10 +10,12 @@ namespace RetailPulse.Web.Controllers;
 public class UsersController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
 
-    public UsersController(AppDbContext db)
+    public UsersController(AppDbContext db, AuditService audit)
     {
         _db = db;
+        _audit = audit;
     }
 
     // LIST
@@ -77,6 +79,9 @@ public class UsersController : Controller
 
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Users", "Create",
+        user.UserId, username,
+        newValues: new { Username = username, Email = email, RoleId = roleId });
         TempData["Success"] = $"User '{username}' created successfully.";
         return RedirectToAction(nameof(Index));
     }
@@ -116,6 +121,9 @@ public class UsersController : Controller
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Users", "Edit",
+        user.UserId, username,
+        newValues: new { Username = username, Email = email, RoleId = roleId });
         TempData["Success"] = $"User '{username}' updated successfully.";
         return RedirectToAction(nameof(Index));
     }
@@ -141,6 +149,8 @@ public class UsersController : Controller
 
         user.IsActive = !user.IsActive;
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Users", user.IsActive ? "Activate" : "Deactivate",
+        user.UserId, user.Username);
         TempData["Success"] = $"User '{user.Username}' {(user.IsActive ? "activated" : "deactivated")}.";
         return RedirectToAction(nameof(Index));
     }
@@ -150,5 +160,33 @@ public class UsersController : Controller
         ViewBag.Roles = new SelectList(
             await _db.Roles.OrderBy(r => r.Name).ToListAsync(),
             "RoleId", "Name", selectedRoleId);
+    }
+
+    // FORCE RESET PASSWORD — POST (Admin only)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForceResetPassword(int id, string newPassword)
+    {
+        if (!PermissionService.HasPermission(User, "Users", "Edit"))
+            return RedirectToAction("AccessDenied", "Auth");
+
+        var user = await _db.Users.FindAsync(id);
+        if (user == null) return NotFound();
+
+        if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 8)
+        {
+            TempData["Error"] = "Password must be at least 8 characters.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.ResetToken = null;
+        user.ResetTokenExpiry = null;
+        await _db.SaveChangesAsync();
+
+        await _audit.LogAsync("Users", "ForcePasswordReset", user.UserId, user.Username);
+
+        TempData["Success"] = $"Password for '{user.Username}' has been reset.";
+        return RedirectToAction(nameof(Index));
     }
 }

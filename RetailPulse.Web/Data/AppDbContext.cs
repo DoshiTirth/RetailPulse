@@ -18,12 +18,13 @@ public class AppDbContext : DbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<User> Users { get; set; }
-
+    public DbSet<AuditLog> AuditLogs { get; set; }
+    public DbSet<DashboardWidget> DashboardWidgets { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // ─── Primary Keys (explicit) ──────────────────────────
+        // Primary Keys (explicit)
         modelBuilder.Entity<Supplier>().HasKey(s => s.SupplierId);
         modelBuilder.Entity<Category>().HasKey(c => c.CategoryId);
         modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
@@ -33,37 +34,37 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<RestockLog>().HasKey(r => r.RestockId);
         modelBuilder.Entity<RestockLog>().ToTable("RestockLog");
 
-        // ─── Supplier ─────────────────────────────────────────
+        // Supplier
         modelBuilder.Entity<Supplier>()
             .Property(s => s.Name).IsRequired().HasMaxLength(150);
 
-        // ─── Category ─────────────────────────────────────────
+        // Category
         modelBuilder.Entity<Category>()
             .Property(c => c.Name).IsRequired().HasMaxLength(100);
 
-        // ─── Product ──────────────────────────────────────────
+        // Product
         modelBuilder.Entity<Product>()
             .HasIndex(p => p.SKU).IsUnique();
 
         modelBuilder.Entity<Product>()
             .Property(p => p.UnitPrice).HasColumnType("decimal(10,2)");
 
-        // ─── SalesOrder ───────────────────────────────────────
+        // SalesOrder 
         modelBuilder.Entity<SalesOrder>()
             .Property(o => o.TotalAmount).HasColumnType("decimal(12,2)");
 
         modelBuilder.Entity<SalesOrder>()
             .Property(o => o.Status).HasMaxLength(20);
 
-        // ─── SalesOrderItem ───────────────────────────────────
+        // SalesOrderItem
         modelBuilder.Entity<SalesOrderItem>()
             .Property(i => i.UnitPrice).HasColumnType("decimal(10,2)");
 
-        // ─── RestockLog ───────────────────────────────────────
+        // RestockLog
         modelBuilder.Entity<RestockLog>()
             .Property(r => r.Notes).HasMaxLength(300);
 
-        // ─── Relationships (explicit FK mapping) ─────────────────
+        // Relationships (explicit FK mapping)
         modelBuilder.Entity<SalesOrderItem>()
             .HasOne(i => i.SalesOrder)
             .WithMany(o => o.Items)
@@ -94,7 +95,7 @@ public class AppDbContext : DbContext
             .WithMany(p => p.RestockLogs)
             .HasForeignKey(r => r.ProductId);
 
-        // ─── Auth ─────────────────────────────────────────────
+        // Auth
         modelBuilder.Entity<Role>()
             .HasKey(r => r.RoleId);
 
@@ -124,6 +125,32 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Permission>()
             .HasIndex(p => new { p.Module, p.Action })
+            .IsUnique();
+
+        // AuditLog
+        modelBuilder.Entity<AuditLog>()
+            .HasKey(a => a.AuditId);
+
+        modelBuilder.Entity<AuditLog>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<AuditLog>()
+            .ToTable("AuditLogs");
+
+        modelBuilder.Entity<DashboardWidget>()
+            .HasKey(w => w.WidgetId);
+
+        modelBuilder.Entity<DashboardWidget>()
+            .HasOne(w => w.User)
+            .WithMany()
+            .HasForeignKey(w => w.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DashboardWidget>()
+            .HasIndex(w => new { w.UserId, w.WidgetKey })
             .IsUnique();
     }
 }

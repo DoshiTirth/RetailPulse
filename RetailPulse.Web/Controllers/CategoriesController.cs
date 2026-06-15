@@ -9,10 +9,12 @@ namespace RetailPulse.Web.Controllers;
 public class CategoriesController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly AuditService _audit;
 
-    public CategoriesController(AppDbContext db)
+    public CategoriesController(AppDbContext db, AuditService audit)
     {
         _db = db;
+        _audit = audit;
     }
 
     // LIST
@@ -49,6 +51,9 @@ public class CategoriesController : Controller
         {
             _db.Categories.Add(category);
             await _db.SaveChangesAsync();
+            await _audit.LogAsync("Categories", "Create",
+            category.CategoryId, category.Name,
+            newValues: new { category.Name, category.Description });
             TempData["Success"] = $"Category '{category.Name}' added successfully.";
             return RedirectToAction(nameof(Index));
         }
@@ -84,6 +89,9 @@ public class CategoriesController : Controller
         {
             _db.Update(category);
             await _db.SaveChangesAsync();
+            await _audit.LogAsync("Categories", "Edit",
+            category.CategoryId, category.Name,
+            newValues: new { category.Name, category.Description });
             TempData["Success"] = $"Category '{category.Name}' updated successfully.";
             return RedirectToAction(nameof(Index));
         }
@@ -112,6 +120,8 @@ public class CategoriesController : Controller
 
         _db.Categories.Remove(category);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Categories", "Delete",
+        category.CategoryId, category.Name);
         TempData["Success"] = $"Category '{category.Name}' deleted.";
         return RedirectToAction(nameof(Index));
     }

@@ -2,29 +2,55 @@
 
 <div class="page-header">
     <div>
+        <div class="page-header-meta">
+            <span>Products</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span>Add Product</span>
+        </div>
         <h1>Add Product</h1>
         <p>Add a new product to the catalogue</p>
     </div>
-    <a asp-action="Index" class="btn btn-ghost">Back to Products</a>
+    <a asp-action="Index" class="btn btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back
+    </a>
 </div>
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        @TempData["Error"]
+    </div>
 }
 
 <div class="card animate-in" style="max-width: 680px;">
     <form asp-action="Create" method="post">
         @Html.AntiForgeryToken()
 
+        <div class="section-divider"><span>Basic Info</span></div>
+
         <div class="grid-2">
             <div class="form-group">
                 <label>Product Name</label>
-                <input type="text" name="Name" value="@Model.Name" placeholder="e.g. Wireless Headphones" required />
+                <input type="text" name="Name" value="@Model?.Name"
+                       placeholder="e.g. Wireless Headphones" required />
             </div>
             <div class="form-group">
                 <label>SKU</label>
-                <input type="text" name="SKU" value="@Model.SKU" placeholder="e.g. ELEC-005" required />
+                <input type="text" name="SKU" value="@Model?.SKU"
+                       placeholder="e.g. ELEC-005" required />
             </div>
         </div>
 
@@ -65,24 +91,36 @@
             </div>
         </div>
 
-        <div class="grid-2">
+        <div class="section-divider"><span>Pricing & Stock</span></div>
+
+        <div class="grid-3">
             <div class="form-group">
                 <label>Unit Price ($)</label>
-                <input type="number" name="UnitPrice" value="@Model.UnitPrice" step="0.01" min="0" placeholder="0.00" required />
+                <input type="number" name="UnitPrice" value="@Model?.UnitPrice"
+                       step="0.01" min="0" placeholder="0.00" required />
             </div>
             <div class="form-group">
                 <label>Stock Quantity</label>
-                <input type="number" name="StockQuantity" value="@Model.StockQuantity" min="0" placeholder="0" required />
+                <input type="number" name="StockQuantity" value="@Model?.StockQuantity"
+                       min="0" placeholder="0" required />
+            </div>
+            <div class="form-group">
+                <label>Reorder Level</label>
+                <input type="number" name="ReorderLevel" value="@Model?.ReorderLevel"
+                       min="0" placeholder="10" required />
             </div>
         </div>
 
-        <div class="form-group" style="max-width: 200px;">
-            <label>Reorder Level</label>
-            <input type="number" name="ReorderLevel" value="@Model.ReorderLevel" min="0" placeholder="10" required />
-        </div>
-
         <div style="display: flex; gap: 12px; margin-top: 8px;">
-            <button type="submit" class="btn btn-primary">Save Product</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Save Product
+            </button>
             <a asp-action="Index" class="btn btn-ghost">Cancel</a>
         </div>
     </form>
