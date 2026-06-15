@@ -19,7 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
-
+    public DbSet<DashboardWidget> DashboardWidgets { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -95,7 +95,7 @@ public class AppDbContext : DbContext
             .WithMany(p => p.RestockLogs)
             .HasForeignKey(r => r.ProductId);
 
-        // ─── Auth ─────────────────────────────────────────────
+        // Auth
         modelBuilder.Entity<Role>()
             .HasKey(r => r.RoleId);
 
@@ -139,5 +139,18 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<AuditLog>()
             .ToTable("AuditLogs");
+
+        modelBuilder.Entity<DashboardWidget>()
+            .HasKey(w => w.WidgetId);
+
+        modelBuilder.Entity<DashboardWidget>()
+            .HasOne(w => w.User)
+            .WithMany()
+            .HasForeignKey(w => w.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DashboardWidget>()
+            .HasIndex(w => new { w.UserId, w.WidgetKey })
+            .IsUnique();
     }
 }
